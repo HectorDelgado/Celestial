@@ -1,14 +1,13 @@
 CREATE TABLE favoriteImageOfTheDay (
     id TEXT PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
     image_url TEXT NOT NULL,
     explanation TEXT NOT NULL,
-    date_saved TEXT NOT NULL,
     display_date TEXT NOT NULL,
     copyright TEXT NOT NULL
 );
 
 CREATE INDEX favoriteImageOfTheDay_image_url ON favoriteImageOfTheDay(image_url);
-
 
 selectAll:
 SELECT *
@@ -22,9 +21,9 @@ WHERE id = ?;
 insert:
 INSERT INTO favoriteImageOfTheDay(
     id,
+    title,
     image_url,
     explanation,
-    date_saved,
     display_date,
     copyright
 )

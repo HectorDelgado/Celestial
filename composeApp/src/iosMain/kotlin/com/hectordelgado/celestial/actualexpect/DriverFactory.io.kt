@@ -6,6 +6,6 @@ import com.hectordelgado.celestial.SqlDelightDatabase
 
 actual class DriverFactory {
     actual fun createDriver(): SqlDriver {
-        return NativeSqliteDriver(SqlDelightDatabase.Schema, "test.db")
+        return NativeSqliteDriver(SqlDelightDatabase.Schema, "celestial-db.db")
     }
 }

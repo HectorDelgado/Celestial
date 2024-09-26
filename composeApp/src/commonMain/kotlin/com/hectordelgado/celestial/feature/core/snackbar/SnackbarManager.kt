@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 object SnackbarManager {
-    private val _message: MutableStateFlow<SnackbarState?> = MutableStateFlow(null)
-    val message: StateFlow<SnackbarState?> = _message.asStateFlow()
+    private val _message: MutableStateFlow<SnackbarState> = MutableStateFlow(SnackbarState.empty)
+    val message: StateFlow<SnackbarState> = _message.asStateFlow()
 
     fun showMessage(message: SnackbarState) {
         _message.value = message

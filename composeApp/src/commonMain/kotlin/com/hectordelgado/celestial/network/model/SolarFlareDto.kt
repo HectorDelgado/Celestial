@@ -1,4 +1,4 @@
-package com.hectordelgado.celestial.network.dto
+package com.hectordelgado.celestial.network.model
 
 import kotlinx.serialization.Serializable
 

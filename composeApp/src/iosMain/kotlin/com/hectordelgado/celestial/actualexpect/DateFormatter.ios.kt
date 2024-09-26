@@ -5,7 +5,11 @@ class IOSDateFormatter : DateFormatter {
         return dateString
     }
 
-    override fun getDateAsYYYYMMDD(daysOffset: Long): String {
+    override fun formatISO8601AsTimeWithZone(dateString: String): String {
+        return ""
+    }
+
+    override fun getCurrentDateAsYYYYMMDD(daysOffset: Long): String {
         return ""
     }
 }

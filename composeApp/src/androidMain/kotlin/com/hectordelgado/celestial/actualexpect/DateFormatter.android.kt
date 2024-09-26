@@ -17,7 +17,15 @@ class AndroidDateFormatter : DateFormatter {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getDateAsYYYYMMDD(daysOffset: Long): String {
+    override fun formatISO8601AsTimeWithZone(dateString: String): String {
+        val zdt = ZonedDateTime.parse(dateString)
+        val formatter = DateTimeFormatter
+            .ofPattern("HH:mm:ssXXX'['VV']'")
+        return zdt.format(formatter)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getCurrentDateAsYYYYMMDD(daysOffset: Long): String {
         val zdt = LocalDate.now().minusDays(daysOffset)
         val formatter = DateTimeFormatter
             .ofPattern("yyyy-MM-dd")

@@ -4,14 +4,21 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,9 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
+import com.hectordelgado.celestial.actualexpect.getMLogger
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
-import com.hectordelgado.celestial.network.dto.SolarFlareDto
+import com.hectordelgado.celestial.network.model.SolarFlareDto
 
 class SolarFlareScreen : Screen {
     @Composable
@@ -45,36 +53,55 @@ class SolarFlareScreen : Screen {
             viewModel.fetchSolarFlareData()
         }
 
-        SolarFlareScreenContent(state)
+        SolarFlareScreenContent(
+            state,
+            onBackClick = viewModel::fetchSolarFlareData,
+            onForwardClick = viewModel::fetchSolarFlareData
+        )
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SolarFlareScreenContent(state: SolarFlareState) {
-
-    val title by remember(state.headlinerTitle) { mutableStateOf(state.headlinerTitle) }
-
+fun SolarFlareScreenContent(
+    state: SolarFlareState,
+    onBackClick: (Long) -> Unit,
+    onForwardClick: (Long) -> Unit
+) {
     Column {
         Text(
-            title,
+            state.headlinerTitle,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            fontSize = 32.sp,
+            fontSize = 24.sp,
             fontWeight = FontWeight.W400
         )
 
-        Card(backgroundColor = Color.LightGray) {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                state.solarFlareSections.forEach { (headerTitle, solarFlareItems) ->
-                    stickyHeader {
-                        Text(headerTitle, modifier = Modifier.fillMaxWidth().background(Color.LightGray))
-                    }
-
-                    items(solarFlareItems) {
-                        SolarFlareItem(it)
-                    }
+        LazyColumn(modifier = Modifier.background(Color.LightGray).fillMaxWidth().weight(1f)) {
+            state.solarFlareSections.forEach { (headerTitle, solarFlareItems) ->
+                stickyHeader {
+                    Text(headerTitle, modifier = Modifier.fillMaxWidth().background(Color.LightGray))
                 }
+
+                items(solarFlareItems) {
+                    SolarFlareItem(it)
+                }
+            }
+        }
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            IconButton(
+                onClick = { onBackClick(state.daysOffset + 1) } ,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
+            }
+            IconButton(
+                onClick = { onForwardClick(state.daysOffset - 1) },
+                modifier = Modifier.weight(1f),
+                enabled = state.daysOffset > 0
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, "")
             }
         }
     }

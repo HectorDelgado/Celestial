@@ -7,8 +7,7 @@ import com.hectordelgado.celestial.actualexpect.getMLogger
 import com.hectordelgado.celestial.data.datasource.NasaRepository
 import com.hectordelgado.celestial.db.AppDatabase
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
-import com.hectordelgado.celestial.network.api.NasaApi
-import com.hectordelgado.celestial.network.dto.PictureOfTheDayDto
+import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -23,7 +22,7 @@ class ImageOfTheDayScreenModel(
     fun fetchFavoritePictures() {
         screenModelScope.launch {
             val favorites = appDatabase.favoriteImageOfTheDayDao.selectAll()
-            mutableState.value = state.value.copy(favorites = favorites)
+            mutableState.value = state.value.copy(favorites = favorites.map { ImageOfTheDay(it) })
         }
     }
 
@@ -32,20 +31,17 @@ class ImageOfTheDayScreenModel(
             screenModelScope.launch {
                 mutableState.value = mutableState.value
                     .copy(daysOffset = offset)
-                val offsetDate = getDateFormatter().getDateAsYYYYMMDD(state.value.daysOffset)
+                val offsetDate = getDateFormatter().getCurrentDateAsYYYYMMDD(state.value.daysOffset)
 
                 nasaRepository.fetchPictureOfTheDay(offsetDate)
                     .onStart {
 
                     }
-                    .onEach {
+                    .onEach { dto ->
                         mutableState.value = mutableState.value
                             .copy(
-                                pictureOfTheDayDto = it.copy(
-                                    isSaved = state.value
-                                        .favorites
-                                        .any { fav -> fav.imageUrl == it.url }
-                                )
+                                imageOfTheDay = ImageOfTheDay(dto)
+                                    .copy(isSaved = state.value.favorites.any { it.imageUrl ==  dto.url})
                             )
                     }
                     .catch {
@@ -57,21 +53,31 @@ class ImageOfTheDayScreenModel(
 
     }
 
-    fun onFavoriteClick(dto: PictureOfTheDayDto) {
+    fun onFavoriteClick(item: ImageOfTheDay) {
         screenModelScope.launch {
             try {
-                if (dto.isSaved) {
+                if (item.isSaved) {
                     // remove from favorites
                     appDatabase.favoriteImageOfTheDayDao
-                        .delete(dto.url)
+                        .delete(item.imageUrl)
+
+                    mutableState.value = state.value
+                        .copy(
+                            imageOfTheDay = state.value.imageOfTheDay?.copy(isSaved = false),
+                            favorites = state.value.favorites.filter { it.imageUrl != item.imageUrl }
+                        )
                 } else {
                     // add to favorites
                     appDatabase.favoriteImageOfTheDayDao
-                        .insert(FavoriteImageOfTheDayEntity(dto))
+                        .insert(FavoriteImageOfTheDayEntity(item))
+
+                    mutableState.value = state.value
+                        .copy(
+                            imageOfTheDay = state.value.imageOfTheDay?.copy(isSaved = true),
+                            favorites = state.value.favorites + item
+                        )
                 }
 
-                mutableState.value = state.value
-                    .copy(pictureOfTheDayDto = dto.copy(isSaved = !dto.isSaved))
             } catch (e: Exception) {
                 getMLogger().logDebug("Error adding/removing favorite ${e.message}")
             }

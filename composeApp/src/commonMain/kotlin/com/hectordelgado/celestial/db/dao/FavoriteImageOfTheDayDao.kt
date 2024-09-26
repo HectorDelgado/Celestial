@@ -25,9 +25,9 @@ class DefaultFavoriteImageOfTheDayDao(
         return database.favoriteImageOfTheDayQueries
             .insert(
                 id = item.id,
+                title = item.title,
                 image_url = item.imageUrl,
                 explanation = item.explanation,
-                date_saved = item.dateSaved,
                 display_date = item.displayDate,
                 copyright = item.copyright
             )

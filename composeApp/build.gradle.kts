@@ -1,7 +1,8 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import com.hectordelgado.celestial.SecretsExtractor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
+
 
 
 buildscript {
@@ -91,9 +92,12 @@ kotlin {
 
             api("org.lighthousegames:logging:1.4.2")
             implementation("co.touchlab:stately-common:2.0.5")
+            implementation("app.cash.sqldelight:runtime:2.0.2")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation("co.touchlab:stately-isolate:2.0.5")
+            implementation("co.touchlab:stately-iso-collections:2.0.5")
             implementation("app.cash.sqldelight:native-driver:2.0.2")
         }
 
@@ -155,15 +159,8 @@ buildkonfig {
     // objectName = "YourAwesomeConfig"
     // exposeObjectWithName = "YourAwesomePublicConfig"
 
-    val secretsPropertiesFile = rootProject.file("secret.properties")
-    val secrets = if (secretsPropertiesFile.exists()) {
-        Properties().apply {
-            load(secretsPropertiesFile.inputStream())
-        }
-    } else {
-        throw GradleException("Secret.properties file not found")
-    }
-
+    val extractor = SecretsExtractor()
+    val secrets = extractor.loadSecrets("$rootDir/secret.properties")
 
     defaultConfigs {
         buildConfigField(STRING, "NASA_API_KEY", secrets.getProperty("NASA_API_KEY"))
@@ -177,4 +174,3 @@ sqldelight {
         }
     }
 }
-

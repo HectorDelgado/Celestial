@@ -1,8 +1,8 @@
 package com.hectordelgado.celestial.data.datasource
 
 import com.hectordelgado.celestial.network.api.NasaApi
-import com.hectordelgado.celestial.network.dto.PictureOfTheDayDto
-import com.hectordelgado.celestial.network.dto.SolarFlareDto
+import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
+import com.hectordelgado.celestial.network.model.SolarFlareDto
 import kotlinx.coroutines.flow.Flow
 
 interface NasaRepository {

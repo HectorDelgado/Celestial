@@ -1,5 +1,6 @@
 package com.hectordelgado.celestial.di
 
+import app.cash.sqldelight.db.SqlDriver
 import com.hectordelgado.celestial.SqlDelightDatabase
 import com.hectordelgado.celestial.actualexpect.createDatabase
 import com.hectordelgado.celestial.actualexpect.sqlDriverModule
@@ -16,7 +17,7 @@ import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreenModel
 import com.hectordelgado.celestial.feature.splash.SplashScreen
 import com.hectordelgado.celestial.feature.splash.SplashScreenModel
 import com.hectordelgado.celestial.network.api.NasaApi
-import com.hectordelgado.celestial.network.api.NetworkManager
+import com.hectordelgado.celestial.network.NetworkManager
 import org.koin.dsl.module
 
 val dataModule = module {
@@ -48,7 +49,7 @@ val featureModule = module {
     single { ImageOfTheDayScreenModel(get(), get()) }
 }
 
-fun sharedModule() = listOf(
+fun platformModules() = listOf(
     sqlDriverModule
 )
 

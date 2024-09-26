@@ -14,13 +14,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -35,7 +32,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
-import com.hectordelgado.celestial.network.dto.PictureOfTheDayDto
+import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
 
 class ImageOfTheDayScreen : Screen {
     @Composable
@@ -65,12 +62,12 @@ class ImageOfTheDayScreen : Screen {
 fun ImageOfTheDayScreenContent(
     state: ImageOfTheDayState,
     fetchPictureOfTheDay: (Long) -> Unit,
-    onFavoriteClick: (PictureOfTheDayDto) -> Unit
+    onFavoriteClick: (ImageOfTheDay) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column {
         Column(modifier = Modifier.weight(1f).verticalScroll(scrollState)) {
-            state.pictureOfTheDayDto?.let {
+            state.imageOfTheDay?.let {
                 Text(
                     it.title,
                     fontSize = 24.sp,
@@ -79,11 +76,11 @@ fun ImageOfTheDayScreenContent(
                     textAlign = TextAlign.Center
                 )
 
-                Text(it.date, fontSize = 11.sp)
+                Text(it.displayDate, fontSize = 11.sp)
 
                 val imageLoader = ImageRequest
                     .Builder(LocalPlatformContext.current)
-                    .data(it.url)
+                    .data(it.imageUrl)
                     .build()
                 AsyncImage(
                     imageLoader,
@@ -110,7 +107,7 @@ fun ImageOfTheDayScreenContent(
 
             }
         }
-        if (state.pictureOfTheDayDto != null) {
+        if (state.imageOfTheDay != null) {
             Column() {
                 Divider(modifier = Modifier.fillMaxWidth())
                 Row {

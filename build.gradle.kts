@@ -6,5 +6,4 @@ plugins {
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
-    //id("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin") version "0.15.2"
 }

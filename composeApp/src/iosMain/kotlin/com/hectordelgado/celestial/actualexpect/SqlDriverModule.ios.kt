@@ -5,5 +5,6 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual val sqlDriverModule: Module = module {
+    factory { DriverFactory() }
     single<SqlDriver> { DriverFactory().createDriver() }
 }

@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import com.hectordelgado.celestial.feature.core.snackbar.SnackbarManager
+import com.hectordelgado.celestial.feature.core.snackbar.SnackbarState
 import com.hectordelgado.celestial.feature.core.topbar.MainTopAppBar
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
@@ -29,23 +30,20 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainAppContent(
     topBarState: TopBarState,
-    hostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState,
+    snackbarState: SnackbarState,
     navigator: Navigator,
     content: @Composable () -> Unit
 ) {
-    val snackbarState by SnackbarManager.message.collectAsState()
-
     LaunchedEffect(snackbarState) {
-        snackbarState?.let {
-            hostState.showSnackbar(
-                message = it.message,
-                actionLabel = it.actionLabel,
-                duration = it.duration
-            ).let(it.onSnackbarResult)
+        if (snackbarState != SnackbarState.empty) {
+            snackbarHostState.showSnackbar(
+                message = snackbarState.message,
+                actionLabel = snackbarState.actionLabel,
+                duration = snackbarState.duration
+            ).let(snackbarState.onSnackbarResult)
         }
     }
-
-
 
     Scaffold(
         topBar = {
@@ -68,7 +66,7 @@ fun MainAppContent(
             )
         },
         snackbarHost = {
-            SnackbarHost(hostState = hostState)
+            SnackbarHost(hostState = snackbarHostState)
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
