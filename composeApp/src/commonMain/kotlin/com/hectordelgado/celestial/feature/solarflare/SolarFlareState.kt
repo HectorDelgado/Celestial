@@ -1,6 +1,6 @@
 package com.hectordelgado.celestial.feature.solarflare
 
-import com.hectordelgado.celestial.network.model.SolarFlareDto
+import com.hectordelgado.celestial.network.response.SolarFlareDto
 
 data class SolarFlareState(
     val headlinerTitle: String,

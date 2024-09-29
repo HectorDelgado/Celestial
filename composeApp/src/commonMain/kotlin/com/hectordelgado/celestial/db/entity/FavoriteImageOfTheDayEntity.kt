@@ -2,7 +2,6 @@ package com.hectordelgado.celestial.db.entity
 
 import com.hectordelgado.celestial.FavoriteImageOfTheDay
 import com.hectordelgado.celestial.feature.imageoftheday.ImageOfTheDay
-import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
 
 data class FavoriteImageOfTheDayEntity(
     val id: String,

@@ -2,8 +2,12 @@ package com.hectordelgado.celestial.network.api
 
 import com.hectordelgado.celestial.BuildKonfig
 import com.hectordelgado.celestial.network.NetworkManager
-import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
-import com.hectordelgado.celestial.network.model.SolarFlareDto
+import com.hectordelgado.celestial.network.response.MarsPhotosResponse
+import com.hectordelgado.celestial.network.response.PictureOfTheDayDto
+import com.hectordelgado.celestial.network.response.Rover
+import com.hectordelgado.celestial.network.response.RoverCamera
+import com.hectordelgado.celestial.network.response.SolarFlareDto
+import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -93,6 +97,25 @@ class NasaApi(private val networkManager: NetworkManager) {
                     "DONKI/FLR",
                     params = params
                 )
+
+            emitAll(handleResponseAsFlow(response))
+        }
+    }
+
+    fun fetchMarsPhotos(
+        date: String,
+        page: Int = 1,
+        rover: MarsPhotosResponse.Rover = MarsPhotosResponse.Rover.CURIOSITY
+    ): Flow<MarsPhotosResponse> {
+        return flow {
+            val params = mutableMapOf<String, String>()
+            params.put("earth_date", date)
+            params.put("page", page.toString())
+
+            val response = makeRequest<MarsPhotosResponse>(
+                "mars-photos/api/v1/rovers/${rover.value}/photos",
+                params = params
+            )
 
             emitAll(handleResponseAsFlow(response))
         }

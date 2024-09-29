@@ -37,6 +37,7 @@ import celestial.composeapp.generated.resources.Res
 import celestial.composeapp.generated.resources.spiral_background
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
 import com.hectordelgado.celestial.feature.imageoftheday.ImageOfTheDayScreen
+import com.hectordelgado.celestial.feature.marsphotos.MarsPhotosScreen
 import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreen
 import org.jetbrains.compose.resources.painterResource
 
@@ -119,6 +120,20 @@ fun SplashScreenContent(
                         textAlign = TextAlign.Center
                     )
                 }
+            }
+
+            Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+                OutlinedButton(
+                    onClick = { onNavigationRequested(navigator, MarsPhotosScreen()) },
+                    modifier = Modifier.fillMaxHeight().weight(1f)
+                ) {
+                    Text(
+                        "Mars photos",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
             }
         }
     }

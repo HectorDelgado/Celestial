@@ -11,11 +11,23 @@ androidx-espresso-core = "3.6.1"
 androidx-lifecycle = "2.8.0"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
+build-konfig = "0.15.2"
+coil3 = "3.0.0-alpha10"
+coil3-ktor = "3.0.0-alpha08"
 compose-plugin = "1.6.11"
 coroutines = "1.9.0-RC.2"
+flipper = "0.267.1"
 junit = "4.13.2"
+koin = "3.2.0"
+koin-android = "4.0.0"
 kotlin = "2.0.0"
+kotlinGradlePlugin = "1.9.0"
+kotlinx-serialization-json = "1.5.1"
+kotlinSerializationPlugin = "2.0.20"
 ktor = "2.3.12"
+soloader = "0.10.5"
+sqldelight = "2.0.2"
+voyager = "1.1.0-beta02"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -30,15 +42,41 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+buildKonfig-gradlePlugin = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "build-konfig" }
+cashapp-sqldelight-androidDriver = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight"}
+cashapp-sqldelight-nativeDriver = { group = "app.cash.sqldelight", name = "native-driver", version.ref = "sqldelight" }
+cashapp-sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqldelight" }
+coil3-core = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil3" }
+coil3-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }
+coil3-composeCore = { group = "io.coil-kt.coil3", name = "coil-compose-core", version.ref = "coil3" }
+coil3-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor", version.ref = "coil3-ktor"}
+flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
+flipper-noop = { group = "com.facebook.flipper", name = "flipper-noop", version.ref = "flipper" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin-android" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json"}
+ktor-client-contentNegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+soloader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soloader" }
+voyager-koin = { group = "cafe.adriel.voyager", name = "voyager-koin", version.ref = "voyager"}
+voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
+voyager-screenModel = { group = "cafe.adriel.voyager", name = "voyager-screenmodel", version.ref = "voyager" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "build-konfig"}
+
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinSerialization = { id = "plugin.serialization", version.ref = "kotlinSerializationPlugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }

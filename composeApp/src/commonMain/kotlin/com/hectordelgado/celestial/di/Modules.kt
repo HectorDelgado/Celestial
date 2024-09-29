@@ -12,6 +12,8 @@ import com.hectordelgado.celestial.db.dao.DefaultFavoriteImageOfTheDayDao
 import com.hectordelgado.celestial.db.dao.FavoriteImageOfTheDayDao
 import com.hectordelgado.celestial.feature.imageoftheday.ImageOfTheDayScreen
 import com.hectordelgado.celestial.feature.imageoftheday.ImageOfTheDayScreenModel
+import com.hectordelgado.celestial.feature.marsphotos.MarsPhotoScreenModel
+import com.hectordelgado.celestial.feature.marsphotos.MarsPhotosScreen
 import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreen
 import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreenModel
 import com.hectordelgado.celestial.feature.splash.SplashScreen
@@ -36,6 +38,14 @@ val networkModule = module {
 }
 
 val featureModule = module {
+    // image of the day module
+    factory { ImageOfTheDayScreen() }
+    single { ImageOfTheDayScreenModel(get(), get()) }
+
+    // mars photos module
+    factory { MarsPhotosScreen() }
+    single { MarsPhotoScreenModel(get()) }
+
     // solar flare module
     factory { SolarFlareScreen() }
     single { SolarFlareScreenModel(get()) }
@@ -44,9 +54,7 @@ val featureModule = module {
     factory { SplashScreen() }
     single { SplashScreenModel() }
 
-    // image of the day module
-    factory { ImageOfTheDayScreen() }
-    single { ImageOfTheDayScreenModel(get(), get()) }
+
 }
 
 fun platformModules() = listOf(

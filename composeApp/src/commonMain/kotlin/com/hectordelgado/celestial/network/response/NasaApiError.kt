@@ -1,4 +1,4 @@
-package com.hectordelgado.celestial.network.model
+package com.hectordelgado.celestial.network.response
 
 import com.hectordelgado.celestial.network.api.ApiError
 import kotlinx.serialization.Serializable

@@ -3,15 +3,13 @@ import com.hectordelgado.celestial.SecretsExtractor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-
-
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
-        classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.15.2")
+        classpath(libs.kotlin.gradlePlugin)
+        classpath(libs.buildKonfig.gradlePlugin)
     }
 }
 
@@ -20,9 +18,12 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    kotlin("plugin.serialization") version "1.9.20"
-    id("com.codingfeline.buildkonfig") version "0.15.2"
-    id("app.cash.sqldelight") version "2.0.2"
+
+    kotlin(libs.plugins.kotlinSerialization.get().pluginId)
+        .version(libs.versions.kotlinSerializationPlugin.get())
+
+    alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -49,56 +50,62 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
-            implementation("app.cash.sqldelight:android-driver:2.0.2")
+            implementation(libs.cashapp.sqldelight.androidDriver)
         }
         commonMain.dependencies {
+            // Compose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            // AndroidX
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.ktor.client.core)
+
+            // Coil3
+            implementation(libs.coil3.core)
+            implementation(libs.coil3.compose)
+            implementation(libs.coil3.composeCore)
+            implementation(libs.coil3.ktor)
+
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.test)
+
+            // Kotlinx
             implementation(libs.kotlinx.coroutines.core)
-            implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-            //implementation("io.coil-kt:coil:2.7.0")
+            implementation(libs.kotlinx.serialization.json)
 
-            implementation("io.coil-kt.coil3:coil:3.0.0-alpha10")
-            implementation("io.coil-kt.coil3:coil-compose:3.0.0-alpha10")
-            implementation("io.coil-kt.coil3:coil-compose-core:3.0.0-alpha10")
-            implementation("io.coil-kt.coil3:coil-network-ktor:3.0.0-alpha08")
+            // Ktor
+            implementation(libs.ktor.client.contentNegotiation)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.serialization.json)
 
-            //implementation("io.coil-kt.coil3:coil-network-okhttp:2.7.0")
+            // Okio
+            implementation("com.squareup.okio:okio:3.9.1")
 
-            val voyagerVersion = "1.1.0-beta02"
+            // SqlDelight
+            implementation(libs.cashapp.sqldelight.runtime)
 
-            // Multiplatform
+            // Voyager
+            implementation(libs.voyager.koin)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.screenModel)
 
-            // Navigator
-            implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
-
-            // Screen Model
-            implementation("cafe.adriel.voyager:voyager-screenmodel:$voyagerVersion")
-
-            implementation("cafe.adriel.voyager:voyager-koin:$voyagerVersion")
-
-            val koin = "3.2.0"
-            implementation("io.insert-koin:koin-core:$koin")
-            implementation("io.insert-koin:koin-test:$koin")
-
-            api("org.lighthousegames:logging:1.4.2")
+            // todo: see if this is still needed
             implementation("co.touchlab:stately-common:2.0.5")
-            implementation("app.cash.sqldelight:runtime:2.0.2")
+
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.cashapp.sqldelight.nativeDriver)
+
+            // todo: see if this is still needed
             implementation("co.touchlab:stately-isolate:2.0.5")
             implementation("co.touchlab:stately-iso-collections:2.0.5")
-            implementation("app.cash.sqldelight:native-driver:2.0.2")
         }
 
         commonTest.dependencies {
@@ -129,7 +136,7 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
         }
     }
     compileOptions {
@@ -144,20 +151,20 @@ android {
         debugImplementation(compose.uiTooling)
         implementation(libs.kotlinx.coroutines.android)
 
-        debugImplementation("com.facebook.flipper:flipper:0.266.0")
-        debugImplementation("com.facebook.soloader:soloader:0.10.5")
-        debugImplementation("com.facebook.flipper:flipper-network-plugin:0.266.0")
-        releaseImplementation("com.facebook.flipper:flipper-noop:0.266.0")
-        implementation("com.facebook.soloader:soloader:0.12.1+")
+        // Fliipper
+        //debugImplementation(libs.flipper)
+        //debugImplementation(libs.flipper.noop)
+        //releaseImplementation(libs.soloader)
 
-        implementation("io.insert-koin:koin-android:4.0.0")
+        // Koin
+        implementation(libs.koin.android)
+
+
     }
 }
 
 buildkonfig {
     packageName = "com.hectordelgado.celestial"
-    // objectName = "YourAwesomeConfig"
-    // exposeObjectWithName = "YourAwesomePublicConfig"
 
     val extractor = SecretsExtractor()
     val secrets = extractor.loadSecrets("$rootDir/secret.properties")

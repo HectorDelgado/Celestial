@@ -7,7 +7,6 @@ import com.hectordelgado.celestial.actualexpect.getMLogger
 import com.hectordelgado.celestial.data.datasource.NasaRepository
 import com.hectordelgado.celestial.db.AppDatabase
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
-import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

@@ -1,8 +1,9 @@
 package com.hectordelgado.celestial.data.datasource
 
 import com.hectordelgado.celestial.network.api.NasaApi
-import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
-import com.hectordelgado.celestial.network.model.SolarFlareDto
+import com.hectordelgado.celestial.network.response.MarsPhotosResponse
+import com.hectordelgado.celestial.network.response.PictureOfTheDayDto
+import com.hectordelgado.celestial.network.response.SolarFlareDto
 import kotlinx.coroutines.flow.Flow
 
 interface NasaRepository {
@@ -17,6 +18,12 @@ interface NasaRepository {
         startDate: String?,
         endDate: String?
     ): Flow<List<SolarFlareDto>>
+
+    fun fetchMarsPhotos(
+        date: String,
+        page: Int = 1,
+        rover: MarsPhotosResponse.Rover = MarsPhotosResponse.Rover.CURIOSITY
+    ): Flow<MarsPhotosResponse>
 }
 
 class DefaultNasaRepository(private val nasaApi: NasaApi) : NasaRepository {
@@ -35,4 +42,13 @@ class DefaultNasaRepository(private val nasaApi: NasaApi) : NasaRepository {
     ): Flow<List<SolarFlareDto>> {
         return nasaApi.fetchSolarFlareData(startDate, endDate)
     }
+
+    override fun fetchMarsPhotos(
+        date: String,
+        page: Int,
+        rover: MarsPhotosResponse.Rover
+    ): Flow<MarsPhotosResponse> {
+        return nasaApi.fetchMarsPhotos(date, page, rover)
+    }
+
 }

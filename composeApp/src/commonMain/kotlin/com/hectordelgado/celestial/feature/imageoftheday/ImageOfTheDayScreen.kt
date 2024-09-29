@@ -32,7 +32,6 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
-import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
 
 class ImageOfTheDayScreen : Screen {
     @Composable

@@ -1,7 +1,7 @@
 package com.hectordelgado.celestial.feature.imageoftheday
 
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
-import com.hectordelgado.celestial.network.model.PictureOfTheDayDto
+import com.hectordelgado.celestial.network.response.PictureOfTheDayDto
 
 data class ImageOfTheDayState(
     val daysOffset: Long,
