@@ -5,13 +5,12 @@ import com.hectordelgado.celestial.network.api.ApiResponse
 import com.hectordelgado.celestial.network.response.NasaApiError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.ByteReadChannel
 import kotlinx.serialization.json.Json
 
 /**
@@ -29,6 +28,9 @@ class NetworkManager {
                         ignoreUnknownKeys = true
                     }
                 )
+            }
+            install(HttpTimeout) {
+                socketTimeoutMillis = 20_000
             }
         }
     }

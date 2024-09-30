@@ -47,7 +47,11 @@ fun DefaultLoadingContent() {
 
 @Composable
 fun DefaultErrorContent(message: String = "There was an error") {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Icon(Icons.Default.Warning, "")
         Text(message, fontSize = 24.sp, fontWeight = FontWeight.W400)
     }
