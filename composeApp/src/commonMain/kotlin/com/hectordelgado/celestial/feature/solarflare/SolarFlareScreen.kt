@@ -32,7 +32,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
-import com.hectordelgado.celestial.network.response.SolarFlareDto
+import com.hectordelgado.celestial.network.response.SolarFlareResponse
 
 class SolarFlareScreen : Screen {
     @Composable
@@ -104,7 +104,7 @@ fun SolarFlareScreenContent(
 }
 
 @Composable
-fun SolarFlareItem(item: SolarFlareDto) {
+fun SolarFlareItem(item: SolarFlareResponse) {
     Card(
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray),

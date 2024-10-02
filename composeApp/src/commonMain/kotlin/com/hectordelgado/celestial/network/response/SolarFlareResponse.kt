@@ -3,7 +3,7 @@ package com.hectordelgado.celestial.network.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SolarFlareDto(
+data class SolarFlareResponse(
     val flrID: String,
     val instruments: List<Instrument>,
     val beginTime: String,

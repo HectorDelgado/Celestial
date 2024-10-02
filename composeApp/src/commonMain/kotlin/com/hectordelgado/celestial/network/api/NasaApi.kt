@@ -3,11 +3,8 @@ package com.hectordelgado.celestial.network.api
 import com.hectordelgado.celestial.BuildKonfig
 import com.hectordelgado.celestial.network.NetworkManager
 import com.hectordelgado.celestial.network.response.MarsPhotosResponse
-import com.hectordelgado.celestial.network.response.PictureOfTheDayDto
-import com.hectordelgado.celestial.network.response.Rover
-import com.hectordelgado.celestial.network.response.RoverCamera
-import com.hectordelgado.celestial.network.response.SolarFlareDto
-import io.ktor.utils.io.ByteReadChannel
+import com.hectordelgado.celestial.network.response.PictureOfTheDayResponse
+import com.hectordelgado.celestial.network.response.SolarFlareResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -62,14 +59,14 @@ class NasaApi(private val networkManager: NetworkManager) {
         startDate: String? = null,
         endDate: String? = null,
         count: Int? = null
-    ): Flow<PictureOfTheDayDto> = flow {
+    ): Flow<PictureOfTheDayResponse> = flow {
         val params = mutableMapOf<String, String>()
         date?.let { params.put("date", it) }
         startDate?.let { params.put("start_date", it) }
         endDate?.let { params.put("end_date", it) }
         count?.let { params.put("count", it.toString()) }
 
-        val response = makeRequest<PictureOfTheDayDto>(
+        val response = makeRequest<PictureOfTheDayResponse>(
             "planetary/apod",
             params
         )
@@ -87,13 +84,13 @@ class NasaApi(private val networkManager: NetworkManager) {
     fun fetchSolarFlareData(
         startDate: String?,
         endDate: String?
-    ): Flow<List<SolarFlareDto>> {
+    ): Flow<List<SolarFlareResponse>> {
         return flow {
             val params = mutableMapOf<String, String>()
             startDate?.let { params.put("startDate", it) }
             endDate?.let { params.put("endDate", it) }
 
-            val response = makeRequest<List<SolarFlareDto>>(
+            val response = makeRequest<List<SolarFlareResponse>>(
                     "DONKI/FLR",
                     params = params
                 )

@@ -35,30 +35,6 @@ class NetworkManager {
         }
     }
 
-
-
-//    suspend fun executeGetRequest(
-//        path: String,
-//        params: Map<String, String> = emptyMap(),
-//    ) : HttpResponse {
-//        return client.prepareGet(path) {
-//            url {
-//                params.forEach { parameters.append(it.key, it.value) }
-//            }
-//        }.execute()
-//    }
-
-    suspend fun executeGet(
-        path: String,
-        params: Map<String, String> = emptyMap()
-    ): HttpResponse {
-        return client.prepareGet(path) {
-            url {
-                params.forEach { parameters.append(it.key, it.value) }
-            }
-        }.execute()
-    }
-
     suspend inline fun <reified T> executeGetRequest(
         path: String,
         params: Map<String, String> = emptyMap()
@@ -70,14 +46,8 @@ class NetworkManager {
         }.execute()
 
         return if (response.status == HttpStatusCode.OK) {
-            getMLogger().logDebug("body: ${response.body<Any>().toString()}")
             ApiResponse.Success(response.body<T>())
         } else {
-            getMLogger().logDebug("Request failed at path $path")
-            getMLogger().logDebug("\t\t-> with params $params")
-            getMLogger().logDebug("\t\t-> with status code: ${response.status}")
-
-            getMLogger().logDebug("Response string: ${response.toString()}")
             val error = response.body<NasaApiError>()
             ApiResponse.Error(error.error)
         }
