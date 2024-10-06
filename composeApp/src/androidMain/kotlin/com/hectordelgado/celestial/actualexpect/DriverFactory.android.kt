@@ -10,13 +10,3 @@ actual class DriverFactory(private val context: Context) {
         return AndroidSqliteDriver(SqlDelightDatabase.Schema, context, "celestial-db.db")
     }
 }
-
-//class AndroidDriverFactory(private val context: Context) {
-//    fun createDriver(): DriverFactory {
-//
-//    }
-//}
-//
-//actual fun getSqlDriver(): SqlDriver {
-//
-//}
