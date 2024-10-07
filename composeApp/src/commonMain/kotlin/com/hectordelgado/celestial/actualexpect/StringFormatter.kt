@@ -1,7 +1,7 @@
-package com.hectordelgado.celestial.actualexpect
+    package com.hectordelgado.celestial.actualexpect
 
 interface StringFormatter {
-    fun format(string: String, args: Any): String
+    fun format(string: String, vararg args: Any): String
 }
 
 expect fun getStringFormatter(): StringFormatter

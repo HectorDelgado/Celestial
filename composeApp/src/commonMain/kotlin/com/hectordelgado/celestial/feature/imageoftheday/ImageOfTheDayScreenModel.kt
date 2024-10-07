@@ -1,22 +1,29 @@
 package com.hectordelgado.celestial.feature.imageoftheday
 
-import cafe.adriel.voyager.core.model.StateScreenModel
+import androidx.compose.material.SnackbarResult
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.hectordelgado.celestial.actualexpect.getDateFormatter
 import com.hectordelgado.celestial.actualexpect.getMLogger
-import com.hectordelgado.celestial.data.datasource.NasaRepository
-import com.hectordelgado.celestial.db.AppDatabase
+import com.hectordelgado.celestial.data.NasaRepository
+import com.hectordelgado.celestial.db.DefaultAppDatabase
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
+import com.hectordelgado.celestial.feature.core.app.ContentState
+import com.hectordelgado.celestial.feature.core.app.ContentStateScreenModel
+import com.hectordelgado.celestial.feature.core.snackbar.SnackbarManager
+import com.hectordelgado.celestial.feature.core.snackbar.SnackbarState
+import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
+import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class ImageOfTheDayScreenModel(
     private val nasaRepository: NasaRepository,
-    private val appDatabase: AppDatabase
-) : StateScreenModel<ImageOfTheDayState>(ImageOfTheDayState.empty) {
+    private val appDatabase: DefaultAppDatabase
+) : ContentStateScreenModel<ImageOfTheDayState>(ImageOfTheDayState.empty, ContentState.Loading()) {
 
     fun fetchFavoritePictures() {
         screenModelScope.launch {
@@ -28,15 +35,17 @@ class ImageOfTheDayScreenModel(
     fun fetchPictureOfTheDay(offset: Long) {
         if (offset >= 0) {
             screenModelScope.launch {
-                mutableState.value = mutableState.value
-                    .copy(daysOffset = offset)
+                mutableState.value = mutableState.value.copy(daysOffset = offset)
                 val offsetDate = getDateFormatter().getCurrentDateAsYYYYMMDD(state.value.daysOffset)
 
                 nasaRepository.fetchPictureOfTheDay(offsetDate)
                     .onStart {
-
+                        TopBarManager.updateState {
+                            setIsVisible(false)
+                        }
                     }
                     .onEach { dto ->
+                        mutableContentState.value = ContentState.Success
                         mutableState.value = mutableState.value
                             .copy(
                                 imageOfTheDay = ImageOfTheDay(dto)
@@ -44,7 +53,26 @@ class ImageOfTheDayScreenModel(
                             )
                     }
                     .catch {
+                        mutableContentState.value = ContentState.Error()
+                        SnackbarManager.showMessage(
+                            SnackbarState(
+                                message = "Error fetching picture of the day",
+                                actionLabel = "Retry",
+                                onSnackbarResult = {
+                                    if (it == SnackbarResult.ActionPerformed) {
+                                        fetchPictureOfTheDay(state.value.daysOffset)
+                                    }
+                                }
+                            )
+                        )
                         getMLogger().logDebug("Error fetching picture of the day ${it.message}")
+                    }
+                    .onCompletion {
+                        TopBarManager.updateState {
+                            setIsVisible(true)
+                            setTitle("Image of the day")
+                            setLeftIcon(TopBarLeftIcon.BACK)
+                        }
                     }
                     .launchIn(this)
             }

@@ -2,11 +2,12 @@ package com.hectordelgado.celestial.feature.marsphotos
 
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
-import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.hectordelgado.celestial.actualexpect.getDateFormatter
 import com.hectordelgado.celestial.actualexpect.getMLogger
-import com.hectordelgado.celestial.data.datasource.NasaRepository
+import com.hectordelgado.celestial.data.NasaRepository
+import com.hectordelgado.celestial.feature.core.app.ContentState
+import com.hectordelgado.celestial.feature.core.app.ContentStateScreenModel
 import com.hectordelgado.celestial.feature.core.snackbar.SnackbarManager
 import com.hectordelgado.celestial.feature.core.snackbar.SnackbarState
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
@@ -22,23 +23,24 @@ import kotlinx.coroutines.launch
 
 class MarsPhotoScreenModel(
     private val nasaRepository: NasaRepository
-) : StateScreenModel<MarsPhotosState>(MarsPhotosState.empty) {
+) : ContentStateScreenModel<MarsPhotosState>(MarsPhotosState.empty, ContentState.Loading()) {
 
     fun onMarsPhotosRequested(daysOffset: Long) {
         screenModelScope.launch {
             // update at end
-            mutableState.value = state.value.copy(daysOffset = daysOffset, page = 1)
+
             val date = getDateFormatter().getCurrentDateAsYYYYMMDD(365 + daysOffset)
 
-            nasaRepository.fetchMarsPhotos(date, page = state.value.page, rover = state.value.selectedRover)
+            nasaRepository.fetchMarsPhotos(date, state.value.page, state.value.selectedRover)
                 .onStart {
+                    mutableContentState.value = ContentState.Loading()
+                    mutableState.value = state.value.copy(daysOffset = daysOffset, page = 1)
                     TopBarManager.updateState {
                         setIsVisible(false)
                     }
-                    mutableState.value = state.value.copy(isLoading = true, pageInitialized = false)
                 }
                 .onEach {
-                    mutableState.value = state.value.copy(photos = it.photos, pageInitialized = true)
+                    mutableState.value = state.value.copy(photos = it.photos)
                 }
                 .catch {
                     getMLogger().logDebug("Error fetching mars photos: ${it.message}")
@@ -57,7 +59,7 @@ class MarsPhotoScreenModel(
                     )
                 }
                 .onCompletion {
-                    mutableState.value = state.value.copy(isLoading = false)
+                    mutableContentState.value = ContentState.Success
                     TopBarManager.updateState {
                         setIsVisible(true)
                         setTitle(date)
@@ -75,17 +77,21 @@ class MarsPhotoScreenModel(
         }
     }
 
-    fun onLoadNextPage() {
-        mutableState.value = state.value.copy(page = state.value.page + 1)
+    fun onLoadNextPage(currentPage: Int) {
+        //mutableState.value = state.value.copy(page = state.value.page + 1)
 
         screenModelScope.launch {
             // update at end
 
             val date = getDateFormatter().getCurrentDateAsYYYYMMDD(365 + state.value.daysOffset)
 
-            nasaRepository.fetchMarsPhotos(date, page = state.value.page, rover = state.value.selectedRover)
+            nasaRepository.fetchMarsPhotos(date, state.value.page,  state.value.selectedRover)
                 .onStart {
-                    mutableState.value = state.value.copy(isLoading = true)
+                    mutableState.value = state.value
+                        .copy(
+                            isLoadingAdditionalPhotos = true,
+                            page = currentPage + 1
+                        )
                 }
                 .onEach {
                     mutableState.value = state.value.copy(photos = state.value.photos + it.photos)
@@ -98,7 +104,8 @@ class MarsPhotoScreenModel(
                             duration = SnackbarDuration.Long,
                             onSnackbarResult = {
                                 if (it == SnackbarResult.ActionPerformed) {
-                                    onMarsPhotosRequested(state.value.daysOffset)
+                                    //onMarsPhotosRequested(state.value.daysOffset)
+                                    onLoadNextPage(currentPage - 1)
                                 }
 
                             }
@@ -107,7 +114,7 @@ class MarsPhotoScreenModel(
                     getMLogger().logDebug("Error fetching mars photos: ${it.message}")
                 }
                 .onCompletion {
-                    mutableState.value = state.value.copy(isLoading = false)
+                    mutableState.value = state.value.copy(isLoadingAdditionalPhotos = false)
                     TopBarManager.updateState {
                         setIsVisible(true)
                         setTitle(date)

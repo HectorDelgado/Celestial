@@ -46,7 +46,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import coil3.compose.AsyncImage
-import com.hectordelgado.celestial.feature.core.app.DefaultLoadingContent
+import com.hectordelgado.celestial.actualexpect.OrientationType
+import com.hectordelgado.celestial.actualexpect.getCurrentDeviceOrientation
+import com.hectordelgado.celestial.feature.core.app.BaseScreen
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
 import com.hectordelgado.celestial.network.response.MarsPhoto
@@ -57,6 +59,7 @@ class MarsPhotosScreen : Screen {
     override fun Content() {
         val viewModel = koinScreenModel<MarsPhotoScreenModel>()
         val state by viewModel.state.collectAsState()
+        val contentState by viewModel.contentState.collectAsState()
 
         val selectedPhoto by remember(state.selectedMarsPhoto) {
             mutableStateOf(state.selectedMarsPhoto)
@@ -66,23 +69,25 @@ class MarsPhotosScreen : Screen {
             viewModel.onMarsPhotosRequested(0)
         }
 
-        AnimatedContent(
-            targetState = selectedPhoto,
-            label = "transition_animation"
-        ) { photo ->
-            photo?.let {
-                MarsPhotoDetailScreen(
-                    item = it,
-                    onCloseDetails = { viewModel.onMarsPhotoSelected(null) }
-                )
-            } ?: run {
-                MarsPhotosMainContent(
-                    state = state,
-                    onRoverSelected = viewModel::onRoverSelected,
-                    onMarsPhotosRequested = viewModel::onMarsPhotosRequested,
-                    onMarsPhotoClicked = viewModel::onMarsPhotoSelected,
-                    onLoadNextPage = viewModel::onLoadNextPage
-                )
+        BaseScreen(contentState) {
+            AnimatedContent(
+                targetState = selectedPhoto,
+                label = "transition_animation"
+            ) { photo ->
+                photo?.let {
+                    MarsPhotoDetailScreen(
+                        item = it,
+                        onCloseDetails = { viewModel.onMarsPhotoSelected(null) }
+                    )
+                } ?: run {
+                    MarsPhotosMainContent(
+                        state = state,
+                        onRoverSelected = viewModel::onRoverSelected,
+                        onMarsPhotosRequested = viewModel::onMarsPhotosRequested,
+                        onMarsPhotoClicked = viewModel::onMarsPhotoSelected,
+                        onLoadNextPage = viewModel::onLoadNextPage
+                    )
+                }
             }
         }
     }
@@ -95,11 +100,10 @@ fun MarsPhotosMainContent(
     onRoverSelected: (MarsPhotosResponse.Rover) -> Unit,
     onMarsPhotosRequested: (Long) -> Unit,
     onMarsPhotoClicked: (MarsPhoto?) -> Unit,
-    onLoadNextPage: () -> Unit
+    onLoadNextPage: (Int) -> Unit
 ) {
     val listState = rememberLazyListState()
 
-    // observe list
     val reachedBottom by remember {
         derivedStateOf {
             val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
@@ -109,104 +113,94 @@ fun MarsPhotosMainContent(
 
     LaunchedEffect(reachedBottom) {
         if (reachedBottom) {
-            onLoadNextPage()
+            onLoadNextPage(state.page)
         }
     }
 
-
-    if (!state.pageInitialized) {
-        DefaultLoadingContent()
-    } else {
-        Column {
-            if (state.photos.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    state = listState
-                ) {
-                    itemsIndexed(state.photos) { index, photo ->
-                        Card(
-                            onClick = {
-                                TopBarManager.updateState {
-                                    setIsVisible(false)
-                                    setLeftIcon(TopBarLeftIcon.BACK)
-                                }
-                                onMarsPhotoClicked(photo)
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-
-                            Box {
-                                AsyncImage(
-                                    model = photo.img_src,
-                                    contentDescription = "",
-                                    contentScale = ContentScale.FillWidth,
-                                    modifier = Modifier.height(150.dp)
-                                )
-
-                                Text(text = "#$index", modifier = Modifier.background(Color.LightGray))
+    Column {
+        if (state.photos.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                state = listState
+            ) {
+                itemsIndexed(state.photos) { index, photo ->
+                    Card(
+                        onClick = {
+                            TopBarManager.updateState {
+                                setIsVisible(false)
+                                setLeftIcon(TopBarLeftIcon.BACK)
                             }
-                        }
-                    }
+                            onMarsPhotoClicked(photo)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
 
-                    if (state.isLoading) {
-                        item {
-                            Box(modifier = Modifier.background(Color.White).fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator()
-                            }
+                        Box {
+                            AsyncImage(
+                                model = photo.img_src,
+                                contentDescription = "",
+                                contentScale = ContentScale.FillWidth,
+                                modifier = Modifier.height(150.dp)
+                            )
+
+                            Text(text = "#$index", modifier = Modifier.background(Color.LightGray))
                         }
                     }
                 }
 
-            } else {
-                Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                if (state.isLoadingAdditionalPhotos) {
+                    item {
+                        Box(modifier = Modifier.background(Color.White).fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
+
+        } else {
+            Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                Text(
+                    "No photos available",
+                    modifier = Modifier.fillMaxSize(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        Column() {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                MarsPhotosResponse.Rover.entries.forEach {
+                    val fontWeight = if (state.selectedRover == it)
+                        FontWeight.W800 else FontWeight.Normal
                     Text(
-                        "No photos available",
-                        modifier = Modifier.fillMaxSize(),
-                        textAlign = TextAlign.Center
+                        it.value.capitalize(Locale.current),
+                        modifier = Modifier
+                            .clickable { onRoverSelected(it) },
+                        fontWeight = fontWeight
                     )
                 }
             }
 
-            if (!state.isLoading) {
-                Column() {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        MarsPhotosResponse.Rover.entries.forEach {
-                            val fontWeight = if (state.selectedRover == it)
-                                FontWeight.W800 else FontWeight.Normal
-                            Text(
-                                it.value.capitalize(Locale.current),
-                                modifier = Modifier
-                                    .clickable { onRoverSelected(it) },
-                                fontWeight = fontWeight
-                            )
-                        }
-                    }
-
-                    Row(modifier = Modifier.fillMaxWidth().background(Color.White)) {
-                        TextButton(
-                            { onMarsPhotosRequested(state.daysOffset + 1) },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text("Back")
-                        }
-                        TextButton(
-                            { onMarsPhotosRequested(state.daysOffset - 1) },
-                            modifier = Modifier.weight(1f),
-                            enabled = state.daysOffset > 0
-                        ) {
-                            Text("Forward")
-                        }
-                    }
+            Row(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+                TextButton(
+                    { onMarsPhotosRequested(state.daysOffset + 1) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Back")
+                }
+                TextButton(
+                    { onMarsPhotosRequested(state.daysOffset - 1) },
+                    modifier = Modifier.weight(1f),
+                    enabled = state.daysOffset > 0
+                ) {
+                    Text("Forward")
                 }
             }
-
-
-
         }
     }
 }
@@ -216,17 +210,32 @@ private fun MarsPhotoDetailScreen(
     item: MarsPhoto,
     onCloseDetails: () -> Unit
 ) {
+    val orientation = getCurrentDeviceOrientation()
+    val scrollState = rememberScrollState()
+
+    val containerModifier = if (orientation == OrientationType.LANDSCAPE) {
+        Modifier
+    } else {
+        Modifier.verticalScroll(scrollState)
+    }
+
+    val imageModifier = if (orientation == OrientationType.LANDSCAPE) {
+        Modifier.fillMaxSize()
+    } else {
+        Modifier.fillMaxWidth()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .then(containerModifier)
     ) {
         Box() {
             AsyncImage(
                 model = item.img_src,
                 contentDescription = "",
                 contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxWidth()
+                modifier = imageModifier
             )
             IconButton(
                 onClick = {
@@ -248,10 +257,12 @@ private fun MarsPhotoDetailScreen(
             }
         }
 
-        MarsPhotoDataField("Mars sol", item.sol)
-        MarsPhotoDataField("Earth date", item.earth_date)
-        MarsPhotoDataField("Camera", "[${item.camera.name}]")
-        MarsPhotoDataField("Rover", item.rover.name)
+        if (orientation != OrientationType.LANDSCAPE) {
+            MarsPhotoDataField("Mars sol", item.sol)
+            MarsPhotoDataField("Earth date", item.earth_date)
+            MarsPhotoDataField("Camera", "[${item.camera.name}]")
+            MarsPhotoDataField("Rover", item.rover.name)
+        }
     }
 }
 

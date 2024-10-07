@@ -1,4 +1,4 @@
-package com.hectordelgado.celestial.feature.splash
+package com.hectordelgado.celestial.feature.home
 
 data class SplashState(val isLoading: Boolean) {
     companion object {

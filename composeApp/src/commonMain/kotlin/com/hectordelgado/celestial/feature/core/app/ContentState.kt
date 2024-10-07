@@ -1,7 +1,6 @@
 package com.hectordelgado.celestial.feature.core.app
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.CircularProgressIndicator
@@ -15,40 +14,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-sealed class ScreenState {
+sealed class ContentState {
     data class Loading(
         val content: @Composable () -> Unit = { DefaultLoadingContent() }
-    ) : ScreenState()
+    ) : ContentState()
+
     data class Error(
-        val errorMessage: String = "There was an error",
-        val content: @Composable () -> Unit = { DefaultErrorContent(errorMessage) }
-    ) : ScreenState()
-    data object Success : ScreenState()
-    data object Empty : ScreenState()
+        val content: @Composable () -> Unit = { DefaultErrorScreen() }
+    ) : ContentState()
+
+    data object Success : ContentState()
+
+    data object Empty : ContentState()
 }
 
+/**
+ * A base screen composable that handles the loading, error, and success states.
+ */
 @Composable
-fun ScreenContent(state: ScreenState, content: @Composable () -> Unit) {
+fun BaseScreen(state: ContentState, content: @Composable () -> Unit) {
     when (state) {
-        is ScreenState.Loading -> state.content()
-        is ScreenState.Error -> state.content()
-        is ScreenState.Success -> content()
-        is ScreenState.Empty -> {}
+        is ContentState.Loading -> state.content()
+        is ContentState.Error -> state.content()
+        is ContentState.Success -> content()
+        is ContentState.Empty -> {}
     }
 }
 
 @Composable
-fun DefaultLoadingContent() {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+fun DefaultLoadingContent(modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier.fillMaxSize().then(modifier),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         CircularProgressIndicator()
         Text("Loading", fontSize = 24.sp, fontWeight = FontWeight.W400)
     }
 }
 
 @Composable
-fun DefaultErrorContent(message: String = "There was an error") {
+fun DefaultErrorScreen(message: String = "There was an error", modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

@@ -2,8 +2,6 @@ package com.hectordelgado.celestial.db.dao
 
 import com.hectordelgado.celestial.SqlDelightDatabase
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 interface FavoriteImageOfTheDayDao {
     suspend fun selectAll(): List<FavoriteImageOfTheDayEntity>
@@ -29,7 +27,7 @@ class DefaultFavoriteImageOfTheDayDao(
                 image_url = item.imageUrl,
                 explanation = item.explanation,
                 display_date = item.displayDate,
-                copyright = item.copyright
+                copyright = item.copyright ?: ""
             )
     }
 

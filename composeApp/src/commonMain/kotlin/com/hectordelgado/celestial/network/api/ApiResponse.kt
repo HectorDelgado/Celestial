@@ -3,11 +3,11 @@ package com.hectordelgado.celestial.network.api
 import kotlinx.serialization.Serializable
 
 sealed class ApiResponse<T>(
-    data: T?,
-    error: ApiError?
+    open val data: T?,
+    open val error: ApiError?
 ) {
-    data class Success<T>(val data: T) : ApiResponse<T>(data, null)
-    data class Error<T>(val error: ApiError) : ApiResponse<T>(null, error)
+    data class Success<T>(override val data: T) : ApiResponse<T>(data, null)
+    data class Error<T>(override val error: ApiError) : ApiResponse<T>(null, error)
 }
 
 @Serializable

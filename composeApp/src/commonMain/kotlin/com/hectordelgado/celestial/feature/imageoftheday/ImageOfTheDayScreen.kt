@@ -18,9 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,30 +34,32 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
+import com.hectordelgado.celestial.actualexpect.OrientationType
+import com.hectordelgado.celestial.actualexpect.getCurrentDeviceOrientation
+import com.hectordelgado.celestial.feature.core.app.BaseScreen
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
+import kotlinx.coroutines.launch
 
 class ImageOfTheDayScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel = koinScreenModel<ImageOfTheDayScreenModel>()
         val state by viewModel.state.collectAsState()
+        val contentState by viewModel.contentState.collectAsState()
 
         LaunchedEffect(Unit) {
-            TopBarManager.resetStateTo {
-                setIsVisible(true)
-                setTitle("Image of the day")
-                setLeftIcon(TopBarLeftIcon.BACK)
-            }
             viewModel.fetchFavoritePictures()
             viewModel.fetchPictureOfTheDay(0L)
         }
 
-        ImageOfTheDayScreenContent(
-            state = state,
-            fetchPictureOfTheDay = viewModel::fetchPictureOfTheDay,
-            onFavoriteClick = viewModel::onFavoriteClick
-        )
+        BaseScreen(contentState) {
+            ImageOfTheDayScreenContent(
+                state = state,
+                fetchPictureOfTheDay = viewModel::fetchPictureOfTheDay,
+                onFavoriteClick = viewModel::onFavoriteClick
+            )
+        }
     }
 }
 
@@ -64,6 +70,8 @@ fun ImageOfTheDayScreenContent(
     onFavoriteClick: (ImageOfTheDay) -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+
     Column {
         Column(modifier = Modifier.weight(1f).verticalScroll(scrollState)) {
             state.imageOfTheDay?.let {
@@ -106,23 +114,31 @@ fun ImageOfTheDayScreenContent(
 
             }
         }
-        if (state.imageOfTheDay != null) {
-            Column() {
-                Divider(modifier = Modifier.fillMaxWidth())
-                Row {
-                    TextButton(
-                        onClick = { fetchPictureOfTheDay(state.daysOffset + 1) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Previous")
-                    }
-                    TextButton(
-                        onClick =  { fetchPictureOfTheDay(state.daysOffset - 1) },
-                        modifier = Modifier.weight(1f),
-                        enabled = state.daysOffset > 0
-                    ) {
-                        Text("Next")
-                    }
+        Column() {
+            Divider(modifier = Modifier.fillMaxWidth())
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(0)
+                            fetchPictureOfTheDay(state.daysOffset + 1)
+                        }
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Previous")
+                }
+                TextButton(
+                    onClick =  {
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(0)
+                            fetchPictureOfTheDay(state.daysOffset - 1)
+                        }
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = state.daysOffset > 0
+                ) {
+                    Text("Next")
                 }
             }
         }

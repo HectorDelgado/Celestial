@@ -1,4 +1,4 @@
-package com.hectordelgado.celestial.feature.splash
+package com.hectordelgado.celestial.feature.home
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
@@ -41,27 +41,23 @@ import com.hectordelgado.celestial.feature.marsphotos.MarsPhotosScreen
 import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreen
 import org.jetbrains.compose.resources.painterResource
 
-class SplashScreen : Screen {
+class HomeScreen : Screen {
     @Composable
     override fun Content() {
-        val viewModel = koinScreenModel<SplashScreenModel>()
-        val state by viewModel.state.collectAsState()
+        val viewModel = koinScreenModel<HomeScreenModel>()
 
         LaunchedEffect(true) {
             TopBarManager.updateState {
                 setIsVisible(false)
-                setTitle("")
             }
-            viewModel.restoreState()
         }
 
-        SplashScreenContent(state = state, onNavigationRequested = viewModel::onNavigationRequested)
+        SplashScreenContent(onNavigationRequested = viewModel::onNavigationRequested)
     }
 }
 
 @Composable
 fun SplashScreenContent(
-    state: SplashState,
     onNavigationRequested: (Navigator, Screen) -> Unit
 ) {
     val navigator = LocalNavigator.currentOrThrow

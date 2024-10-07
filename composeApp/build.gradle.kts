@@ -98,7 +98,7 @@ kotlin {
             // todo: see if this is still needed
             implementation("co.touchlab:stately-common:2.0.5")
 
-            api("org.lighthousegames:logging:1.5.0")
+            //api("org.lighthousegames:logging:1.5.0")
 
         }
         iosMain.dependencies {

@@ -42,7 +42,7 @@ data class ImageOfTheDay(
         imageUrl = dto.url,
         explanation = dto.explanation,
         displayDate = dto.title,
-        copyright = dto.copyright,
+        copyright = dto.copyright ?: "",
         isSaved = false
     )
 }

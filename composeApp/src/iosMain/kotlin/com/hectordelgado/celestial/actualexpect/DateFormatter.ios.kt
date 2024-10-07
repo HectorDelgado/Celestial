@@ -7,6 +7,7 @@ import platform.Foundation.NSTimeZone
 import platform.Foundation.addTimeInterval
 import platform.Foundation.localeWithLocaleIdentifier
 import platform.Foundation.timeZoneForSecondsFromGMT
+import platform.UIKit.UIDevice
 
 class IOSDateFormatter : DateFormatter {
     companion object {
@@ -28,6 +29,8 @@ class IOSDateFormatter : DateFormatter {
 
         return outputFormatter.stringFromDate(date)
     }
+
+
 
     override fun getCurrentDateAsYYYYMMDD(daysOffset: Long): String {
         val currentDate = NSDate()

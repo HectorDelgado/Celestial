@@ -4,7 +4,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.hectordelgado.celestial.actualexpect.getDateFormatter
 import com.hectordelgado.celestial.actualexpect.getMLogger
-import com.hectordelgado.celestial.data.datasource.NasaRepository
+import com.hectordelgado.celestial.data.NasaRepository
 import com.hectordelgado.celestial.feature.core.snackbar.SnackbarManager
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn

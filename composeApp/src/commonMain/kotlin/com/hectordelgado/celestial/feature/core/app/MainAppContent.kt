@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainAppContent(
+internal fun MainAppContent(
     topBarState: TopBarState,
     snackbarHostState: SnackbarHostState,
     snackbarState: SnackbarState,
