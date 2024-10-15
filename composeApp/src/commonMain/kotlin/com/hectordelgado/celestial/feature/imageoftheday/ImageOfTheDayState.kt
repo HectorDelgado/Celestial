@@ -23,8 +23,9 @@ data class ImageOfTheDay(
     val imageUrl: String,
     val explanation: String,
     val displayDate: String,
+    val mediaType: String,
     val copyright: String,
-    val isSaved: Boolean
+    val isSaved: Boolean,
 ) {
     constructor(entity: FavoriteImageOfTheDayEntity) : this(
         id = entity.id,
@@ -32,6 +33,7 @@ data class ImageOfTheDay(
         imageUrl = entity.imageUrl,
         explanation = entity.explanation,
         displayDate = entity.displayDate,
+        mediaType = entity.mediaType,
         copyright = entity.copyright,
         isSaved = true
     )
@@ -42,7 +44,8 @@ data class ImageOfTheDay(
         imageUrl = dto.url,
         explanation = dto.explanation,
         displayDate = dto.title,
-        copyright = dto.copyright ?: "",
+        mediaType = dto.mediaType,
+        copyright = dto.copyright ?: "N/A",
         isSaved = false
     )
 }

@@ -9,6 +9,7 @@ data class FavoriteImageOfTheDayEntity(
     val imageUrl: String,
     val explanation: String,
     val displayDate: String,
+    val mediaType: String,
     val copyright: String
 ) {
     constructor(data: FavoriteImageOfTheDay) : this(
@@ -17,6 +18,7 @@ data class FavoriteImageOfTheDayEntity(
         imageUrl = data.image_url,
         explanation = data.explanation,
         displayDate = data.display_date,
+        mediaType = data.media_type,
         copyright = data.copyright
     )
 
@@ -26,6 +28,7 @@ data class FavoriteImageOfTheDayEntity(
         imageUrl = model.imageUrl,
         explanation = model.explanation,
         displayDate = model.displayDate,
+        mediaType = model.mediaType,
         copyright = model.copyright
     )
 }

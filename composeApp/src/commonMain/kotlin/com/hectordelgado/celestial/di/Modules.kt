@@ -16,6 +16,8 @@ import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreen
 import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreenModel
 import com.hectordelgado.celestial.feature.home.HomeScreen
 import com.hectordelgado.celestial.feature.home.HomeScreenModel
+import com.hectordelgado.celestial.feature.imageoftheday.FavoriteImagesOfTheDayScreen
+import com.hectordelgado.celestial.feature.imageoftheday.FavoriteImagesOfTheDayScreenModel
 import com.hectordelgado.celestial.network.api.NasaApi
 import com.hectordelgado.celestial.network.NetworkManager
 import org.koin.dsl.module
@@ -39,6 +41,8 @@ val featureModule = module {
     // image of the day module
     factory { ImageOfTheDayScreen() }
     single { ImageOfTheDayScreenModel(get(), get()) }
+    factory { FavoriteImagesOfTheDayScreen() }
+    single { FavoriteImagesOfTheDayScreenModel(get()) }
 
     // mars photos module
     factory { MarsPhotosScreen() }

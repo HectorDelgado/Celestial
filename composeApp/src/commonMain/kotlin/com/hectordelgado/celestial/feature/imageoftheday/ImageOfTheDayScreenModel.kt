@@ -2,6 +2,8 @@ package com.hectordelgado.celestial.feature.imageoftheday
 
 import androidx.compose.material.SnackbarResult
 import cafe.adriel.voyager.core.model.screenModelScope
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.Navigator
 import com.hectordelgado.celestial.actualexpect.getDateFormatter
 import com.hectordelgado.celestial.actualexpect.getMLogger
 import com.hectordelgado.celestial.data.NasaRepository
@@ -40,16 +42,18 @@ class ImageOfTheDayScreenModel(
 
                 nasaRepository.fetchPictureOfTheDay(offsetDate)
                     .onStart {
-                        TopBarManager.updateState {
-                            setIsVisible(false)
-                        }
+
                     }
                     .onEach { dto ->
                         mutableContentState.value = ContentState.Success
                         mutableState.value = mutableState.value
                             .copy(
                                 imageOfTheDay = ImageOfTheDay(dto)
-                                    .copy(isSaved = state.value.favorites.any { it.imageUrl ==  dto.url})
+                                    .copy(
+                                        // copyright can have new lines in it
+                                        copyright = dto.copyright?.replace("\n", "") ?: "",
+                                        isSaved = state.value.favorites.any { it.imageUrl ==  dto.url}
+                                    )
                             )
                     }
                     .catch {
@@ -107,8 +111,13 @@ class ImageOfTheDayScreenModel(
 
             } catch (e: Exception) {
                 getMLogger().logDebug("Error adding/removing favorite ${e.message}")
+                SnackbarManager.showMessage("There was an error updating your favorites")
             }
         }
+    }
+
+    fun onViewFavoritesClicked(navigator: Navigator, screen: Screen) {
+        navigator.push(screen)
     }
 
 }

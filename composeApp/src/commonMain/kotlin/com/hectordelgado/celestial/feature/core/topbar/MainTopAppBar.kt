@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 
@@ -28,6 +29,14 @@ fun MainTopAppBar(
                                 Icon(
                                     Icons.AutoMirrored.Default.ArrowBack,
                                     "Back button"
+                                )
+                            }
+                        }
+                        TopBarLeftIcon.CLOSE -> {
+                            IconButton(onClick = { onLeftIconClick(icon) }) {
+                                Icon(
+                                    Icons.Default.Close,
+                                    "Close button"
                                 )
                             }
                         }

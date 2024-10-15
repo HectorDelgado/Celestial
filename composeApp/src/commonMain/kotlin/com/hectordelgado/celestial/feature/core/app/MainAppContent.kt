@@ -54,6 +54,9 @@ internal fun MainAppContent(
                         TopBarLeftIcon.BACK -> {
                             navigator.pop()
                         }
+                        TopBarLeftIcon.CLOSE -> {
+                            navigator.pop()
+                        }
                     }
                 },
                 onRightIconClick = {

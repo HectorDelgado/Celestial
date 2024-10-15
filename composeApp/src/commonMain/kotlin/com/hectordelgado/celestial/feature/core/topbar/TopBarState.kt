@@ -45,7 +45,8 @@ class TopBarState private constructor(
 }
 
 enum class TopBarLeftIcon {
-    BACK
+    BACK,
+    CLOSE
 }
 
 enum class TopBarRightIcon {

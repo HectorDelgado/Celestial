@@ -4,6 +4,7 @@ CREATE TABLE favoriteImageOfTheDay (
     image_url TEXT NOT NULL,
     explanation TEXT NOT NULL,
     display_date TEXT NOT NULL,
+    media_type TEXT NOT NULL,
     copyright TEXT NOT NULL
 );
 
@@ -25,9 +26,11 @@ INSERT INTO favoriteImageOfTheDay(
     image_url,
     explanation,
     display_date,
+    media_type,
     copyright
 )
 VALUES (
+    ?,
     ?,
     ?,
     ?,
@@ -39,3 +42,6 @@ VALUES (
 delete:
 DELETE FROM favoriteImageOfTheDay
 WHERE id = ?;
+
+deleteAll:
+DELETE FROM favoriteImageOfTheDay;

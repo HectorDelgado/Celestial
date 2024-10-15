@@ -7,6 +7,7 @@ interface FavoriteImageOfTheDayDao {
     suspend fun selectAll(): List<FavoriteImageOfTheDayEntity>
     suspend fun insert(item: FavoriteImageOfTheDayEntity)
     suspend fun delete(id: String)
+    suspend fun deleteAll()
 }
 
 class DefaultFavoriteImageOfTheDayDao(
@@ -27,6 +28,7 @@ class DefaultFavoriteImageOfTheDayDao(
                 image_url = item.imageUrl,
                 explanation = item.explanation,
                 display_date = item.displayDate,
+                media_type = item.mediaType,
                 copyright = item.copyright ?: ""
             )
     }
@@ -34,5 +36,9 @@ class DefaultFavoriteImageOfTheDayDao(
     override suspend fun delete(id: String) {
         return database.favoriteImageOfTheDayQueries
             .delete(id)
+    }
+
+    override suspend fun deleteAll() {
+        database.favoriteImageOfTheDayQueries.deleteAll()
     }
 }
