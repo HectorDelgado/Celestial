@@ -5,6 +5,7 @@ import com.hectordelgado.celestial.actualexpect.createDatabase
 import com.hectordelgado.celestial.actualexpect.sqlDriverModule
 import com.hectordelgado.celestial.data.DefaultNasaRepository
 import com.hectordelgado.celestial.data.NasaRepository
+import com.hectordelgado.celestial.db.AppDatabase
 import com.hectordelgado.celestial.db.DefaultAppDatabase
 import com.hectordelgado.celestial.db.dao.DefaultFavoriteImageOfTheDayDao
 import com.hectordelgado.celestial.db.dao.FavoriteImageOfTheDayDao
@@ -29,7 +30,7 @@ val dataModule = module {
 val dbModule = module {
     single<SqlDelightDatabase> { createDatabase(get()) }
     single<FavoriteImageOfTheDayDao> { DefaultFavoriteImageOfTheDayDao(get()) }
-    single<DefaultAppDatabase> { DefaultAppDatabase(get())}
+    single<AppDatabase> { DefaultAppDatabase(get())}
 }
 
 val networkModule = module {

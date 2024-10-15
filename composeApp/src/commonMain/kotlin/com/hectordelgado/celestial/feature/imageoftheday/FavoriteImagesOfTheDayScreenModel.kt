@@ -2,7 +2,7 @@ package com.hectordelgado.celestial.feature.imageoftheday
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.hectordelgado.celestial.actualexpect.getMLogger
-import com.hectordelgado.celestial.db.DefaultAppDatabase
+import com.hectordelgado.celestial.db.AppDatabase
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
 import com.hectordelgado.celestial.feature.core.app.ContentState
 import com.hectordelgado.celestial.feature.core.app.ContentStateScreenModel
@@ -10,7 +10,7 @@ import com.hectordelgado.celestial.feature.core.snackbar.SnackbarManager
 import kotlinx.coroutines.launch
 
 class FavoriteImagesOfTheDayScreenModel(
-    private val appDatabase: DefaultAppDatabase
+    private val appDatabase: AppDatabase
 ) : ContentStateScreenModel<FavoriteImagesOfTheDayState>(
     initialContentState = ContentState.Loading(),
     initialState = FavoriteImagesOfTheDayState.empty

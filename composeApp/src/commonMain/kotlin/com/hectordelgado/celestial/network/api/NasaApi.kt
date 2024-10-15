@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flow
  */
 class NasaApi(private val networkManager: NetworkManager) {
     private val baseUrl = "https://api.nasa.gov"
-    private val api_Key = BuildKonfig.NASA_API_KEY
+    private val apiKey = BuildKonfig.NASA_API_KEY
 
     /**
      * Makes a GET request to the NASA API.
@@ -30,7 +30,7 @@ class NasaApi(private val networkManager: NetworkManager) {
     ): ApiResponse<T> {
         return networkManager.executeGetRequest<T>(
             "$baseUrl/$path",
-            params.toMutableMap().apply { put("api_key", api_Key) }
+            params.toMutableMap().apply { put("api_key", apiKey) }
         )
     }
 
@@ -106,8 +106,8 @@ class NasaApi(private val networkManager: NetworkManager) {
     ): Flow<MarsPhotosResponse> {
         return flow {
             val params = mutableMapOf<String, String>()
-            params.put("earth_date", date)
-            params.put("page", page.toString())
+            params["earth_date"] = date
+            params["page"] = page.toString()
 
             val response = makeRequest<MarsPhotosResponse>(
                 "mars-photos/api/v1/rovers/${rover.value}/photos",

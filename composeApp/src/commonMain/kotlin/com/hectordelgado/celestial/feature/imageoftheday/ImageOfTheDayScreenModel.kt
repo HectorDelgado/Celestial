@@ -7,7 +7,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.hectordelgado.celestial.actualexpect.getDateFormatter
 import com.hectordelgado.celestial.actualexpect.getMLogger
 import com.hectordelgado.celestial.data.NasaRepository
-import com.hectordelgado.celestial.db.DefaultAppDatabase
+import com.hectordelgado.celestial.db.AppDatabase
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
 import com.hectordelgado.celestial.feature.core.app.ContentState
 import com.hectordelgado.celestial.feature.core.app.ContentStateScreenModel
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 class ImageOfTheDayScreenModel(
     private val nasaRepository: NasaRepository,
-    private val appDatabase: DefaultAppDatabase
+    private val appDatabase: AppDatabase
 ) : ContentStateScreenModel<ImageOfTheDayState>(ImageOfTheDayState.empty, ContentState.Loading()) {
 
     fun fetchFavoritePictures() {
