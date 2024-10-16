@@ -5,7 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import com.hectordelgado.celestial.actualexpect.getDateFormatter
-import com.hectordelgado.celestial.actualexpect.getMLogger
+import com.hectordelgado.celestial.actualexpect.getNativeLogger
 import com.hectordelgado.celestial.data.NasaRepository
 import com.hectordelgado.celestial.db.AppDatabase
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
@@ -69,7 +69,7 @@ class ImageOfTheDayScreenModel(
                                 }
                             )
                         )
-                        getMLogger().logDebug("Error fetching picture of the day ${it.message}")
+                        getNativeLogger().logDebug("Error fetching picture of the day ${it.message}")
                     }
                     .onCompletion {
                         TopBarManager.updateState {
@@ -110,7 +110,7 @@ class ImageOfTheDayScreenModel(
                 }
 
             } catch (e: Exception) {
-                getMLogger().logDebug("Error adding/removing favorite ${e.message}")
+                getNativeLogger().logDebug("Error adding/removing favorite ${e.message}")
                 SnackbarManager.showMessage("There was an error updating your favorites")
             }
         }

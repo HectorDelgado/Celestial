@@ -2,7 +2,6 @@ package com.hectordelgado.celestial.data
 
 import com.hectordelgado.celestial.network.response.MarsPhotosResponse
 import com.hectordelgado.celestial.network.response.PictureOfTheDayResponse
-import com.hectordelgado.celestial.network.response.SolarFlareResponse
 import kotlinx.coroutines.flow.Flow
 
 interface NasaRepository {
@@ -12,11 +11,6 @@ interface NasaRepository {
         endDate: String? = null,
         count: Int? = null
     ): Flow<PictureOfTheDayResponse>
-
-    fun fetchSolarFlareData(
-        startDate: String?,
-        endDate: String?
-    ): Flow<List<SolarFlareResponse>>
 
     fun fetchMarsPhotos(
         date: String,

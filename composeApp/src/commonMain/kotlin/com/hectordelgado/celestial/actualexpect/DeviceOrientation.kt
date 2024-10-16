@@ -9,10 +9,5 @@ enum class OrientationType {
     OTHER
 }
 
-//expect class DeviceOrientation {
-//    @Composable
-//    fun getCurrentOrientation(): OrientationType
-//}
-
 @Composable
 expect fun getCurrentDeviceOrientation(): OrientationType

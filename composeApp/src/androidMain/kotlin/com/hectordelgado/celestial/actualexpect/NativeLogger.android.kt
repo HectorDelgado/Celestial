@@ -2,7 +2,7 @@ package com.hectordelgado.celestial.actualexpect
 
 import android.util.Log
 
-class AndroidMLogger() : MLogger {
+class AndroidNativeLogger() : NativeLogger {
     override fun logDebug(message: String, tag: String?) {
         Log.d(tag, message, null)
     }
@@ -13,4 +13,4 @@ class AndroidMLogger() : MLogger {
 
 }
 
-actual fun getMLogger(): MLogger = AndroidMLogger()
+actual fun getNativeLogger(): NativeLogger = AndroidNativeLogger()

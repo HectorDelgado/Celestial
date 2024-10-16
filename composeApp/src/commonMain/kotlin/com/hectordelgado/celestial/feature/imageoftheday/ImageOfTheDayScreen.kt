@@ -45,7 +45,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
-import com.hectordelgado.celestial.actualexpect.getMLogger
 import com.hectordelgado.celestial.feature.core.app.BaseScreen
 import kotlinx.coroutines.launch
 

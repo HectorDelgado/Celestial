@@ -1,8 +1,8 @@
 package com.hectordelgado.celestial.actualexpect
 
-interface MLogger {
+interface NativeLogger {
     fun logDebug(message: String, tag: String? = "logz")
     fun logError(message: String, tag: String? = "logz")
 }
 
-expect fun getMLogger(): MLogger
+expect fun getNativeLogger(): NativeLogger

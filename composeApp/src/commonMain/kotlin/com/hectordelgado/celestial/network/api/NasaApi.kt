@@ -2,9 +2,9 @@ package com.hectordelgado.celestial.network.api
 
 import com.hectordelgado.celestial.BuildKonfig
 import com.hectordelgado.celestial.network.NetworkManager
+import com.hectordelgado.celestial.network.RequestType
 import com.hectordelgado.celestial.network.response.MarsPhotosResponse
 import com.hectordelgado.celestial.network.response.PictureOfTheDayResponse
-import com.hectordelgado.celestial.network.response.SolarFlareResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -25,10 +25,12 @@ class NasaApi(private val networkManager: NetworkManager) {
      * @param params The parameters of the request.
      */
     private suspend inline fun <reified T> makeRequest(
+        requestType: RequestType,
         path: String,
         params: Map<String, String> = emptyMap()
     ): ApiResponse<T> {
-        return networkManager.executeGetRequest<T>(
+        return networkManager.executeRequest<T>(
+            requestType,
             "$baseUrl/$path",
             params.toMutableMap().apply { put("api_key", apiKey) }
         )
@@ -67,36 +69,12 @@ class NasaApi(private val networkManager: NetworkManager) {
         count?.let { params.put("count", it.toString()) }
 
         val response = makeRequest<PictureOfTheDayResponse>(
+            RequestType.GET,
             "planetary/apod",
             params
         )
 
         emitAll(handleResponseAsFlow(response))
-    }
-
-
-    /**
-     * Fetches the solar flare data from the NASA API.
-     *
-     * @param startDate The start date of the range of solar flare data to fetch.
-     * @param endDate The end date of the range of solar flare data to fetch.
-     */
-    fun fetchSolarFlareData(
-        startDate: String?,
-        endDate: String?
-    ): Flow<List<SolarFlareResponse>> {
-        return flow {
-            val params = mutableMapOf<String, String>()
-            startDate?.let { params.put("startDate", it) }
-            endDate?.let { params.put("endDate", it) }
-
-            val response = makeRequest<List<SolarFlareResponse>>(
-                    "DONKI/FLR",
-                    params = params
-                )
-
-            emitAll(handleResponseAsFlow(response))
-        }
     }
 
     fun fetchMarsPhotos(
@@ -110,6 +88,7 @@ class NasaApi(private val networkManager: NetworkManager) {
             params["page"] = page.toString()
 
             val response = makeRequest<MarsPhotosResponse>(
+                RequestType.GET,
                 "mars-photos/api/v1/rovers/${rover.value}/photos",
                 params = params
             )

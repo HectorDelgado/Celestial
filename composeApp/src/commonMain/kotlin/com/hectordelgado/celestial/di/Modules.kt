@@ -13,8 +13,6 @@ import com.hectordelgado.celestial.feature.imageoftheday.ImageOfTheDayScreen
 import com.hectordelgado.celestial.feature.imageoftheday.ImageOfTheDayScreenModel
 import com.hectordelgado.celestial.feature.marsphotos.MarsPhotoScreenModel
 import com.hectordelgado.celestial.feature.marsphotos.MarsPhotosScreen
-import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreen
-import com.hectordelgado.celestial.feature.solarflare.SolarFlareScreenModel
 import com.hectordelgado.celestial.feature.home.HomeScreen
 import com.hectordelgado.celestial.feature.home.HomeScreenModel
 import com.hectordelgado.celestial.feature.imageoftheday.FavoriteImagesOfTheDayScreen
@@ -48,10 +46,6 @@ val featureModule = module {
     // mars photos module
     factory { MarsPhotosScreen() }
     single { MarsPhotoScreenModel(get()) }
-
-    // solar flare module
-    factory { SolarFlareScreen() }
-    single { SolarFlareScreenModel(get()) }
 
     // splash module
     factory { HomeScreen() }

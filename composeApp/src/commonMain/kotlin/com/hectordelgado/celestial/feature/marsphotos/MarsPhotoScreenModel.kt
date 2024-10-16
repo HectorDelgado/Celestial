@@ -4,7 +4,7 @@ import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.hectordelgado.celestial.actualexpect.getDateFormatter
-import com.hectordelgado.celestial.actualexpect.getMLogger
+import com.hectordelgado.celestial.actualexpect.getNativeLogger
 import com.hectordelgado.celestial.data.NasaRepository
 import com.hectordelgado.celestial.feature.core.app.ContentState
 import com.hectordelgado.celestial.feature.core.app.ContentStateScreenModel
@@ -43,7 +43,7 @@ class MarsPhotoScreenModel(
                     mutableState.value = state.value.copy(photos = it.photos)
                 }
                 .catch {
-                    getMLogger().logDebug("Error fetching mars photos: ${it.message}")
+                    getNativeLogger().logDebug("Error fetching mars photos: ${it.message}")
                     SnackbarManager.showMessage(
                         SnackbarState(
                             message = "Error fetching mars photos",
@@ -111,7 +111,7 @@ class MarsPhotoScreenModel(
                             }
                         )
                     )
-                    getMLogger().logDebug("Error fetching mars photos: ${it.message}")
+                    getNativeLogger().logDebug("Error fetching mars photos: ${it.message}")
                 }
                 .onCompletion {
                     mutableState.value = state.value.copy(isLoadingAdditionalPhotos = false)

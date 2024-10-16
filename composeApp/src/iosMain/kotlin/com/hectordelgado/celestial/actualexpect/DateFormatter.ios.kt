@@ -30,8 +30,6 @@ class IOSDateFormatter : DateFormatter {
         return outputFormatter.stringFromDate(date)
     }
 
-
-
     override fun getCurrentDateAsYYYYMMDD(daysOffset: Long): String {
         val currentDate = NSDate()
         val adjustedDate = currentDate.addTimeInterval((daysOffset * -SECONDS_IN_A_DAY).toDouble()) as NSDate

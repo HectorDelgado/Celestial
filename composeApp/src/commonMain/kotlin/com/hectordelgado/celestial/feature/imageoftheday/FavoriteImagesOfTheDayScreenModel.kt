@@ -1,7 +1,7 @@
 package com.hectordelgado.celestial.feature.imageoftheday
 
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.hectordelgado.celestial.actualexpect.getMLogger
+import com.hectordelgado.celestial.actualexpect.getNativeLogger
 import com.hectordelgado.celestial.db.AppDatabase
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
 import com.hectordelgado.celestial.feature.core.app.ContentState
@@ -22,7 +22,7 @@ class FavoriteImagesOfTheDayScreenModel(
             val favorites = try {
                 appDatabase.favoriteImageOfTheDayDao.selectAll()
             } catch (e: Exception) {
-                getMLogger().logDebug("Error loading favorites ${e.message}")
+                getNativeLogger().logDebug("Error loading favorites ${e.message}")
                 emptyList()
             }
 
@@ -55,7 +55,7 @@ class FavoriteImagesOfTheDayScreenModel(
                 }
 
             } catch (e: Exception) {
-                getMLogger().logDebug("Error adding/removing favorite ${e.message}")
+                getNativeLogger().logDebug("Error adding/removing favorite ${e.message}")
                 SnackbarManager.showMessage("There was an error updating your favorites")
             }
         }

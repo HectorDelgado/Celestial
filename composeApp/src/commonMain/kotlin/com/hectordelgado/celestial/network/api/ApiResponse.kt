@@ -12,6 +12,6 @@ sealed class ApiResponse<T>(
 
 @Serializable
 data class ApiError(
-    val code: String,
+    val code: String?,
     val message: String
 )

@@ -1,6 +1,6 @@
 package com.hectordelgado.celestial.actualexpect
 
-class IOSMLogger: MLogger {
+class IosNativeLogger: NativeLogger {
     override fun logDebug(message: String, tag: String?) {
         TODO("Not yet implemented")
     }
@@ -11,4 +11,4 @@ class IOSMLogger: MLogger {
 
 }
 
-actual fun getMLogger(): MLogger = IOSMLogger()
+actual fun getNativeLogger(): NativeLogger = IosNativeLogger()
