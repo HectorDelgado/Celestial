@@ -1,9 +1,9 @@
-package com.hectordelgado.celestial.network.response
+package com.hectordelgado.celestial.network.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MarsPhotosResponse(
+data class MarsPhotosDto(
     val photos: List<MarsPhoto>
 ) {
     enum class Rover(val value: String) {

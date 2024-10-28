@@ -1,13 +1,13 @@
 package com.hectordelgado.celestial.feature.marsphotos
 
-import com.hectordelgado.celestial.network.response.MarsPhoto
-import com.hectordelgado.celestial.network.response.MarsPhotosResponse
+import com.hectordelgado.celestial.network.dto.MarsPhoto
+import com.hectordelgado.celestial.network.dto.MarsPhotosDto
 
 data class MarsPhotosState(
     val daysOffset: Long,
     val page: Int,
     val isLoadingAdditionalPhotos: Boolean,
-    val selectedRover: MarsPhotosResponse.Rover,
+    val selectedRover: MarsPhotosDto.Rover,
     val selectedMarsPhoto: MarsPhoto? = null,
     val photos: List<MarsPhoto>
 ) {
@@ -16,7 +16,7 @@ data class MarsPhotosState(
             daysOffset = 0L,
             page = 1,
             isLoadingAdditionalPhotos = false,
-            selectedRover = MarsPhotosResponse.Rover.CURIOSITY,
+            selectedRover = MarsPhotosDto.Rover.CURIOSITY,
             selectedMarsPhoto = null,
             photos = emptyList()
         )

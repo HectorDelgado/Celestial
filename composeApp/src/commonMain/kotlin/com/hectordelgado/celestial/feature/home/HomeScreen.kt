@@ -1,10 +1,5 @@
 package com.hectordelgado.celestial.feature.home
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,12 +14,9 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -67,26 +59,12 @@ fun SplashScreenContent(
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-        val infiniteTransition = rememberInfiniteTransition()
-        val rotationAnimation = infiniteTransition.animateFloat(
-            initialValue = 0f,
-            targetValue = 360f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(5000, easing = LinearEasing),
-            )
-        )
-
         Image(
             painter = painterResource(Res.drawable.spiral_background),
             contentDescription = "",
             contentScale = ContentScale.Crop,
             alpha = 0.10f,
-            modifier = Modifier
-                .graphicsLayer {
-                    rotationZ = rotationAnimation.value
-                    scaleX = 2f
-                    scaleY = 2f
-                }
+            modifier = Modifier.fillMaxSize()
         )
         Column(
             modifier = Modifier.fillMaxWidth(),

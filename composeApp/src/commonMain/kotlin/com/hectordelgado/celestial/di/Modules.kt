@@ -33,7 +33,7 @@ val dbModule = module {
 
 val networkModule = module {
     factory { NasaApi(get()) }
-    single { NetworkManager() }
+    single { NetworkManager }
 }
 
 val featureModule = module {

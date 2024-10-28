@@ -2,12 +2,9 @@ package com.hectordelgado.celestial.network.api
 
 import com.hectordelgado.celestial.BuildKonfig
 import com.hectordelgado.celestial.network.NetworkManager
-import com.hectordelgado.celestial.network.RequestType
-import com.hectordelgado.celestial.network.response.MarsPhotosResponse
-import com.hectordelgado.celestial.network.response.PictureOfTheDayResponse
+import com.hectordelgado.celestial.network.dto.MarsPhotosDto
+import com.hectordelgado.celestial.network.dto.PictureOfTheDayDto
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 
 /**
  * This class is responsible for making requests to the NASA API.
@@ -24,28 +21,16 @@ class NasaApi(private val networkManager: NetworkManager) {
      * @param path The path of the request.
      * @param params The parameters of the request.
      */
-    private suspend inline fun <reified T> makeRequest(
-        requestType: RequestType,
+    private inline fun <reified T> makeRequestAsFlow(
+        requestType: NetworkManager.RequestType,
         path: String,
         params: Map<String, String> = emptyMap()
-    ): ApiResponse<T> {
-        return networkManager.executeRequest<T>(
+    ): Flow<T> {
+        return networkManager.executeRequestAsFlow<T>(
             requestType,
             "$baseUrl/$path",
             params.toMutableMap().apply { put("api_key", apiKey) }
         )
-    }
-
-    private suspend fun <T> handleResponseAsFlow(response: ApiResponse<T>): Flow<T> = flow {
-        when (response) {
-            is ApiResponse.Success<T> -> {
-                emit(response.data)
-            }
-
-            is ApiResponse.Error -> {
-                throw Exception(response.error.message)
-            }
-        }
     }
 
     /**
@@ -61,39 +46,33 @@ class NasaApi(private val networkManager: NetworkManager) {
         startDate: String? = null,
         endDate: String? = null,
         count: Int? = null
-    ): Flow<PictureOfTheDayResponse> = flow {
+    ): Flow<PictureOfTheDayDto> {
         val params = mutableMapOf<String, String>()
         date?.let { params.put("date", it) }
         startDate?.let { params.put("start_date", it) }
         endDate?.let { params.put("end_date", it) }
         count?.let { params.put("count", it.toString()) }
 
-        val response = makeRequest<PictureOfTheDayResponse>(
-            RequestType.GET,
+        return makeRequestAsFlow<PictureOfTheDayDto>(
+            NetworkManager.RequestType.GET,
             "planetary/apod",
             params
         )
-
-        emitAll(handleResponseAsFlow(response))
     }
 
     fun fetchMarsPhotos(
         date: String,
         page: Int = 1,
-        rover: MarsPhotosResponse.Rover = MarsPhotosResponse.Rover.CURIOSITY
-    ): Flow<MarsPhotosResponse> {
-        return flow {
-            val params = mutableMapOf<String, String>()
-            params["earth_date"] = date
-            params["page"] = page.toString()
+        rover: MarsPhotosDto.Rover = MarsPhotosDto.Rover.CURIOSITY
+    ): Flow<MarsPhotosDto> {
+        val params = mutableMapOf<String, String>()
+        params["earth_date"] = date
+        params["page"] = page.toString()
 
-            val response = makeRequest<MarsPhotosResponse>(
-                RequestType.GET,
-                "mars-photos/api/v1/rovers/${rover.value}/photos",
-                params = params
-            )
-
-            emitAll(handleResponseAsFlow(response))
-        }
+        return makeRequestAsFlow<MarsPhotosDto>(
+            NetworkManager.RequestType.GET,
+            "mars-photos/api/v1/rovers/${rover.value}/photos",
+            params = params
+        )
     }
 }

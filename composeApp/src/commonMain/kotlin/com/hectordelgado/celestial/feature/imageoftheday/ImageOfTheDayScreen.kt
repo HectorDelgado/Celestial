@@ -1,7 +1,11 @@
 package com.hectordelgado.celestial.feature.imageoftheday
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -31,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -148,6 +152,13 @@ fun ImageOfTheDay(
         .data(item.imageUrl)
         .build()
     val uriHandler = LocalUriHandler.current
+    val scaleAnimation = remember { Animatable(1f) }
+    val interactionSource = remember { MutableInteractionSource() }
+
+    LaunchedEffect(item.isSaved) {
+        scaleAnimation.animateTo(1.5f)
+        scaleAnimation.animateTo(1f)
+    }
 
     Column(modifier = modifier) {
         Text(
@@ -193,22 +204,36 @@ fun ImageOfTheDay(
                 modifier = Modifier.weight(1f),
                 fontSize = 12.sp
             )
-            IconButton(onClick = {onFavoriteClick(item)}) {
-                val tint = if (item.isSaved)
-                    Color.Green
-                else
-                    Color.LightGray
-                Icon(
-                    Icons.Outlined.Star,
-                    "",
-                    tint = tint,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
-                )
-            }
+
+            val iconTint = if (item.isSaved)
+                Color.Green
+            else
+                Color.LightGray
+            val iconBorderTint = if (item.isSaved)
+                Color.Black
+            else Color.LightGray
+
+
+            Icon(
+                Icons.Outlined.Star,
+                "",
+                tint = iconTint,
+                modifier = Modifier
+                    .animateContentSize()
+                    .padding(bottom = 16.dp)
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .border(1.dp, iconBorderTint, RoundedCornerShape(8.dp))
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = { onFavoriteClick(item) }
+                    )
+                    .graphicsLayer {
+                        scaleX = scaleAnimation.value
+                        scaleY = scaleAnimation.value
+                    }
+            )
         }
     }
 }

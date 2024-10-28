@@ -1,7 +1,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import com.hectordelgado.celestial.SecretsExtractor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 buildscript {
     repositories {
@@ -83,6 +83,7 @@ kotlin {
             implementation(libs.ktor.client.contentNegotiation)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.serialization.json)
+            implementation(libs.ktor.client.logging)
 
             // Okio
             implementation("com.squareup.okio:okio:3.9.1")
@@ -97,8 +98,6 @@ kotlin {
 
             // todo: see if this is still needed
             implementation("co.touchlab:stately-common:2.0.5")
-
-            //api("org.lighthousegames:logging:1.5.0")
 
         }
         iosMain.dependencies {
@@ -153,23 +152,22 @@ android {
         debugImplementation(compose.uiTooling)
         implementation(libs.kotlinx.coroutines.android)
 
-        // Fliipper
-        //debugImplementation(libs.flipper)
-        //debugImplementation(libs.flipper.noop)
-        //releaseImplementation(libs.soloader)
-
         // Koin
         implementation(libs.koin.android)
-
-
     }
 }
 
 buildkonfig {
     packageName = "com.hectordelgado.celestial"
 
-    val extractor = SecretsExtractor()
-    val secrets = extractor.loadSecrets("$rootDir/secret.properties")
+    val secretsFile = File("$rootDir/secret.properties")
+    val secrets = if (!secretsFile.exists()) {
+        throw Exception("secret.properties file not found at path: $rootDir/secret.properties")
+    } else {
+        Properties().apply {
+            load(secretsFile.inputStream())
+        }
+    }
 
     defaultConfigs {
         buildConfigField(STRING, "NASA_API_KEY", secrets.getProperty("NASA_API_KEY"))
@@ -180,6 +178,7 @@ sqldelight {
     databases {
         create("SqlDelightDatabase") {
             packageName.set("com.hectordelgado.celestial")
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/databases"))
         }
     }
 }

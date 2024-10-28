@@ -1,7 +1,7 @@
 package com.hectordelgado.celestial.feature.imageoftheday
 
 import com.hectordelgado.celestial.db.entity.FavoriteImageOfTheDayEntity
-import com.hectordelgado.celestial.network.response.PictureOfTheDayResponse
+import com.hectordelgado.celestial.network.dto.PictureOfTheDayDto
 
 data class ImageOfTheDayState(
     val daysOffset: Long,
@@ -38,7 +38,7 @@ data class ImageOfTheDay(
         isSaved = true
     )
 
-    constructor(dto: PictureOfTheDayResponse) : this(
+    constructor(dto: PictureOfTheDayDto) : this(
         id = dto.url,
         title = dto.title,
         imageUrl = dto.url,

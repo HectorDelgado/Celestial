@@ -1,7 +1,7 @@
 package com.hectordelgado.celestial.data
 
-import com.hectordelgado.celestial.network.response.MarsPhotosResponse
-import com.hectordelgado.celestial.network.response.PictureOfTheDayResponse
+import com.hectordelgado.celestial.network.dto.MarsPhotosDto
+import com.hectordelgado.celestial.network.dto.PictureOfTheDayDto
 import kotlinx.coroutines.flow.Flow
 
 interface NasaRepository {
@@ -10,12 +10,12 @@ interface NasaRepository {
         startDate: String? = null,
         endDate: String? = null,
         count: Int? = null
-    ): Flow<PictureOfTheDayResponse>
+    ): Flow<PictureOfTheDayDto>
 
     fun fetchMarsPhotos(
         date: String,
         page: Int = 1,
-        rover: MarsPhotosResponse.Rover = MarsPhotosResponse.Rover.CURIOSITY
-    ): Flow<MarsPhotosResponse>
+        rover: MarsPhotosDto.Rover = MarsPhotosDto.Rover.CURIOSITY
+    ): Flow<MarsPhotosDto>
 }
 

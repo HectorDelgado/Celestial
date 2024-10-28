@@ -12,8 +12,8 @@ import com.hectordelgado.celestial.feature.core.snackbar.SnackbarManager
 import com.hectordelgado.celestial.feature.core.snackbar.SnackbarState
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
-import com.hectordelgado.celestial.network.response.MarsPhoto
-import com.hectordelgado.celestial.network.response.MarsPhotosResponse
+import com.hectordelgado.celestial.network.dto.MarsPhoto
+import com.hectordelgado.celestial.network.dto.MarsPhotosDto
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
@@ -53,7 +53,6 @@ class MarsPhotoScreenModel(
                                 if (it == SnackbarResult.ActionPerformed) {
                                     onMarsPhotosRequested(state.value.daysOffset)
                                 }
-
                             }
                         )
                     )
@@ -70,7 +69,7 @@ class MarsPhotoScreenModel(
         }
     }
 
-    fun onRoverSelected(rover: MarsPhotosResponse.Rover) {
+    fun onRoverSelected(rover: MarsPhotosDto.Rover) {
         if (state.value.selectedRover != rover) {
             mutableState.value = state.value.copy(selectedRover = rover)
             onMarsPhotosRequested(state.value.daysOffset)

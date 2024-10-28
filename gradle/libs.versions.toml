@@ -50,8 +50,6 @@ coil3-core = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil3" 
 coil3-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }
 coil3-composeCore = { group = "io.coil-kt.coil3", name = "coil-compose-core", version.ref = "coil3" }
 coil3-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor", version.ref = "coil3-ktor"}
-flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
-flipper-noop = { group = "com.facebook.flipper", name = "flipper-noop", version.ref = "flipper" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin-android" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
@@ -63,8 +61,8 @@ ktor-client-contentNegotiation = { group = "io.ktor", name = "ktor-client-conten
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
-soloader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soloader" }
 voyager-koin = { group = "cafe.adriel.voyager", name = "voyager-koin", version.ref = "voyager"}
 voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
 voyager-screenModel = { group = "cafe.adriel.voyager", name = "voyager-screenmodel", version.ref = "voyager" }

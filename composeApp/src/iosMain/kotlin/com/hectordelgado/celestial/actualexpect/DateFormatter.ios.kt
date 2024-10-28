@@ -7,7 +7,6 @@ import platform.Foundation.NSTimeZone
 import platform.Foundation.addTimeInterval
 import platform.Foundation.localeWithLocaleIdentifier
 import platform.Foundation.timeZoneForSecondsFromGMT
-import platform.UIKit.UIDevice
 
 class IOSDateFormatter : DateFormatter {
     companion object {

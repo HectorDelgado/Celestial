@@ -17,7 +17,6 @@ fun App() {
         Navigator(HomeScreen()) { navigator ->
             val topBarState by TopBarManager.state.collectAsState()
             val snackbarHostState = remember { SnackbarHostState() }
-            SnackbarHostState()
             val snackbarState by SnackbarManager.message.collectAsState()
 
             MainAppContent(

@@ -1,10 +1,10 @@
-package com.hectordelgado.celestial.network.response
+package com.hectordelgado.celestial.network.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PictureOfTheDayResponse(
+data class PictureOfTheDayDto(
     val date: String,
     val explanation: String,
     val title: String,

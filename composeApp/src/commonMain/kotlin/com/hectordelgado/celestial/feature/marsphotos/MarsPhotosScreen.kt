@@ -51,8 +51,8 @@ import com.hectordelgado.celestial.actualexpect.getCurrentDeviceOrientation
 import com.hectordelgado.celestial.feature.core.app.BaseScreen
 import com.hectordelgado.celestial.feature.core.topbar.TopBarLeftIcon
 import com.hectordelgado.celestial.feature.core.topbar.TopBarManager
-import com.hectordelgado.celestial.network.response.MarsPhoto
-import com.hectordelgado.celestial.network.response.MarsPhotosResponse
+import com.hectordelgado.celestial.network.dto.MarsPhoto
+import com.hectordelgado.celestial.network.dto.MarsPhotosDto
 
 class MarsPhotosScreen : Screen {
     @Composable
@@ -97,7 +97,7 @@ class MarsPhotosScreen : Screen {
 @Composable
 fun MarsPhotosMainContent(
     state: MarsPhotosState,
-    onRoverSelected: (MarsPhotosResponse.Rover) -> Unit,
+    onRoverSelected: (MarsPhotosDto.Rover) -> Unit,
     onMarsPhotosRequested: (Long) -> Unit,
     onMarsPhotoClicked: (MarsPhoto?) -> Unit,
     onLoadNextPage: (Int) -> Unit
@@ -174,7 +174,7 @@ fun MarsPhotosMainContent(
                     .background(Color.White),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                MarsPhotosResponse.Rover.entries.forEach {
+                MarsPhotosDto.Rover.entries.forEach {
                     val fontWeight = if (state.selectedRover == it)
                         FontWeight.W800 else FontWeight.Normal
                     Text(
