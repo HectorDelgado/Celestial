@@ -20,7 +20,7 @@ class DefaultFavoriteImageOfTheDayDao(
             .map { FavoriteImageOfTheDayEntity(it) }
     }
 
-    override suspend fun insert(item: FavoriteImageOfTheDayEntity){
+    override suspend fun insert(item: FavoriteImageOfTheDayEntity) {
         return database.favoriteImageOfTheDayQueries
             .insert(
                 id = item.id,
@@ -39,6 +39,7 @@ class DefaultFavoriteImageOfTheDayDao(
     }
 
     override suspend fun deleteAll() {
-        database.favoriteImageOfTheDayQueries.deleteAll()
+        database.favoriteImageOfTheDayQueries
+            .deleteAll()
     }
 }

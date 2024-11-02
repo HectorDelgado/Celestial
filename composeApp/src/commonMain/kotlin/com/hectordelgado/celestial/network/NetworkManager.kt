@@ -2,7 +2,6 @@ package com.hectordelgado.celestial.network
 
 import com.hectordelgado.celestial.network.api.ApiError
 import com.hectordelgado.celestial.network.api.ApiResponse
-import com.hectordelgado.celestial.network.dto.NasaApiErrorDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
@@ -28,7 +27,7 @@ import kotlinx.serialization.json.Json
 /**
  * This class is responsible for making requests to various APIs.
  */
-object NetworkManager {
+class NetworkManager(private val client: HttpClient) {
     enum class RequestType {
         GET,
         POST,
@@ -36,22 +35,22 @@ object NetworkManager {
         DELETE
     }
 
-    private val client = configureClient()
-
-    private fun configureClient(): HttpClient {
-        return HttpClient {
-            install(ContentNegotiation) {
-                json(json = Json {
-                    ignoreUnknownKeys = true
-                })
-            }
-            install(HttpTimeout) {
-                socketTimeoutMillis = 20_000
-            }
-            install(Logging) {
-                logger = Logger.SIMPLE
-                level = LogLevel.ALL
-                sanitizeHeader { header -> header == HttpHeaders.Authorization }
+    companion object {
+        fun buildDefaultClient(): HttpClient {
+            return HttpClient {
+                install(ContentNegotiation) {
+                    json(json = Json {
+                        ignoreUnknownKeys = true
+                    })
+                }
+                install(HttpTimeout) {
+                    socketTimeoutMillis = 20_000
+                }
+                install(Logging) {
+                    logger = Logger.SIMPLE
+                    level = LogLevel.ALL
+                    sanitizeHeader { header -> header == HttpHeaders.Authorization }
+                }
             }
         }
     }
@@ -105,21 +104,11 @@ object NetworkManager {
                 HttpStatusCode.OK -> {
                     ApiResponse.Success(response.body<T>())
                 }
-                HttpStatusCode.Forbidden -> {
-                    val body = response.bodyAsText()
-                    val parsedError = try {
-                        val errorDto = Json.decodeFromString<NasaApiErrorDto>(body)
-                        ApiError(message = errorDto.error.message, code = errorDto.error.code)
-                    } catch (e: Exception) {
-                        ApiError(message = "Network error: $e", code = "${response.status.value}")
-                    }
-
-                    ApiResponse.Error(parsedError)
-                }
                 else -> {
+                    val body = response.bodyAsText()
                     ApiResponse.Error(
                         ApiError(
-                            "Unhandled network error: ${response.status}",
+                            "Request failed. Status: [ ${response.status}] Response body: $body",
                             "${response.status.value}"
                         )
                     )

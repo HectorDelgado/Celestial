@@ -6,7 +6,6 @@ import com.hectordelgado.celestial.actualexpect.sqlDriverModule
 import com.hectordelgado.celestial.data.DefaultNasaRepository
 import com.hectordelgado.celestial.data.NasaRepository
 import com.hectordelgado.celestial.db.AppDatabase
-import com.hectordelgado.celestial.db.DefaultAppDatabase
 import com.hectordelgado.celestial.db.dao.DefaultFavoriteImageOfTheDayDao
 import com.hectordelgado.celestial.db.dao.FavoriteImageOfTheDayDao
 import com.hectordelgado.celestial.feature.imageoftheday.ImageOfTheDayScreen
@@ -28,12 +27,12 @@ val dataModule = module {
 val dbModule = module {
     single<SqlDelightDatabase> { createDatabase(get()) }
     single<FavoriteImageOfTheDayDao> { DefaultFavoriteImageOfTheDayDao(get()) }
-    single<AppDatabase> { DefaultAppDatabase(get())}
+    single<AppDatabase> { AppDatabase(get())}
 }
 
 val networkModule = module {
     factory { NasaApi(get()) }
-    single { NetworkManager }
+    single { NetworkManager(NetworkManager.buildDefaultClient()) }
 }
 
 val featureModule = module {
@@ -47,11 +46,9 @@ val featureModule = module {
     factory { MarsPhotosScreen() }
     single { MarsPhotoScreenModel(get()) }
 
-    // splash module
+    // home module
     factory { HomeScreen() }
     single { HomeScreenModel() }
-
-
 }
 
 fun platformModules() = listOf(

@@ -29,7 +29,7 @@ sealed class ContentState {
 }
 
 /**
- * A base screen composable that handles the loading, error, and success states.
+ * A base screen composable that handles the loading, error, and success UI states.
  */
 @Composable
 fun BaseScreen(state: ContentState, content: @Composable () -> Unit) {

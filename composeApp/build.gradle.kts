@@ -86,7 +86,7 @@ kotlin {
             implementation(libs.ktor.client.logging)
 
             // Okio
-            implementation("com.squareup.okio:okio:3.9.1")
+            //implementation("com.squareup.okio:okio:3.9.1")
 
             // SqlDelight
             implementation(libs.cashapp.sqldelight.runtime)

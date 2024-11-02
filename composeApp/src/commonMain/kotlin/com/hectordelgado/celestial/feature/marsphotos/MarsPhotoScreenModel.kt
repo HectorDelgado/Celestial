@@ -27,8 +27,6 @@ class MarsPhotoScreenModel(
 
     fun onMarsPhotosRequested(daysOffset: Long) {
         screenModelScope.launch {
-            // update at end
-
             val date = getDateFormatter().getCurrentDateAsYYYYMMDD(365 + daysOffset)
 
             nasaRepository.fetchMarsPhotos(date, state.value.page, state.value.selectedRover)
@@ -77,11 +75,7 @@ class MarsPhotoScreenModel(
     }
 
     fun onLoadNextPage(currentPage: Int) {
-        //mutableState.value = state.value.copy(page = state.value.page + 1)
-
         screenModelScope.launch {
-            // update at end
-
             val date = getDateFormatter().getCurrentDateAsYYYYMMDD(365 + state.value.daysOffset)
 
             nasaRepository.fetchMarsPhotos(date, state.value.page,  state.value.selectedRover)
